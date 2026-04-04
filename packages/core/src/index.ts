@@ -92,3 +92,6 @@ export type {
 } from "./storage/storage-adapter.js";
 
 export { createInMemoryAdapter } from "./storage/in-memory-adapter.js";
+
+export type { SqliteAdapterOptions } from "./storage/sqlite-adapter.js";
+export { createSqliteAdapter } from "./storage/sqlite-adapter.js";
