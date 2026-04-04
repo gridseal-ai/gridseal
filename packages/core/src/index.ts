@@ -67,3 +67,21 @@ export {
   computeCertificateHash,
   serializeCertificateForHashing,
 } from "./certificate/reasoning-certificate.js";
+
+export type {
+  ModelProvenance,
+  CreateProvenanceInput,
+  ModelType,
+  PerformanceMetric,
+  DatasetReference,
+  ExternalReference,
+  EthicalConsideration,
+} from "./provenance/model-provenance.js";
+
+export {
+  MODEL_TYPES,
+  createProvenance,
+  verifyProvenance,
+  computeProvenanceHash,
+  serializeProvenanceForHashing,
+} from "./provenance/model-provenance.js";
