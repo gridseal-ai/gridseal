@@ -1,7 +1,7 @@
 {
   "name": "@gridseal/core",
   "version": "0.1.0",
-  "description": "Hash-chained, append-only audit trail for AI decisions",
+  "description": "Tamper-evident, cryptographically verifiable audit trail for AI decisions",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -9,10 +9,15 @@
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
+    },
+    "./sqlite": {
+      "types": "./dist/sqlite.d.ts",
+      "import": "./dist/sqlite.js"
     }
   },
   "scripts": {
-    "build": "tsup src/index.ts --format esm --dts --tsconfig tsconfig.build.json",
+    "build": "tsup --tsconfig tsconfig.build.json",
+    "prepublishOnly": "pnpm run build",
     "test": "vitest run",
     "test:integration": "vitest run --config vitest.integration.config.ts",
     "test:regression": "vitest run --config vitest.regression.config.ts",
@@ -20,13 +25,36 @@
     "lint": "tsc --noEmit",
     "clean": "rm -rf dist"
   },
+  "keywords": [
+    "audit-trail",
+    "hash-chain",
+    "ai-governance",
+    "tamper-evident",
+    "compliance",
+    "provenance"
+  ],
+  "author": "Gridseal by Celestir",
   "license": "AGPL-3.0-only",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/celestir/gridseal.git",
+    "directory": "packages/core"
+  },
   "engines": {
     "node": ">=22.0.0"
   },
+  "sideEffects": false,
   "files": [
     "dist"
   ],
+  "peerDependencies": {
+    "better-sqlite3": ">=9.0.0"
+  },
+  "peerDependenciesMeta": {
+    "better-sqlite3": {
+      "optional": true
+    }
+  },
   "devDependencies": {
     "@types/better-sqlite3": "^7.6.13",
     "@types/node": "^25.5.2",
