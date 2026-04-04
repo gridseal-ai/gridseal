@@ -47,3 +47,23 @@ export {
   validateChain,
   validateSubtree,
 } from "./chain/validation.js";
+
+export type {
+  ReasoningCertificate,
+  CreateCertificateInput,
+  Claim,
+  Evidence,
+  UnsupportedClaim,
+  Assumption,
+  Limitation,
+  ConfidenceAssessment,
+  ConfidenceLevel,
+} from "./certificate/reasoning-certificate.js";
+
+export {
+  CONFIDENCE_LEVELS,
+  createCertificate,
+  verifyCertificate,
+  computeCertificateHash,
+  serializeCertificateForHashing,
+} from "./certificate/reasoning-certificate.js";
