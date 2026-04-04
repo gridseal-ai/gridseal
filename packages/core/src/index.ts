@@ -85,3 +85,10 @@ export {
   computeProvenanceHash,
   serializeProvenanceForHashing,
 } from "./provenance/model-provenance.js";
+
+export type {
+  StorageAdapter,
+  StorageError,
+} from "./storage/storage-adapter.js";
+
+export { createInMemoryAdapter } from "./storage/in-memory-adapter.js";
