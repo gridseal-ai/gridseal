@@ -1,0 +1,15 @@
+node_modules/
+dist/
+.env
+.env.*
+coverage/
+*.log
+.DS_Store
+CLAUDE.md
+CLAUDE_MD_FOR_GRIDSEAL.md
+GridSeal_Product_Design_Manual_v3_1_FINAL.docx
+specs/
+.claude/
+agent-comms/
+reviews/
+SHARED_TASK_NOTES.md
