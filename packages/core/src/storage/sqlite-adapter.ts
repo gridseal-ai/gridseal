@@ -184,20 +184,23 @@ export type SqliteAdapterOptions = {
   readonly path: string;
 };
 
-/** Create a SQLite-backed storage adapter. */
-export function createSqliteAdapter(
-  options: SqliteAdapterOptions
-): StorageAdapter {
-  const db = new Database(options.path);
+function initDatabase(path: string): Database.Database {
+  const db = new Database(path);
   db.pragma("journal_mode = WAL");
   db.pragma("foreign_keys = ON");
-
   db.exec(CREATE_ENTRIES_TABLE);
   db.exec(CREATE_ENTRIES_CHAIN_INDEX);
   db.exec(CREATE_ENTRIES_PARENT_INDEX);
   db.exec(CREATE_CERTIFICATES_TABLE);
   db.exec(CREATE_PROVENANCE_TABLE);
+  return db;
+}
 
+/** Create a SQLite-backed storage adapter. */
+export function createSqliteAdapter(
+  options: SqliteAdapterOptions
+): StorageAdapter {
+  const db = initDatabase(options.path);
   const s = prepareStatements(db);
 
   return {
