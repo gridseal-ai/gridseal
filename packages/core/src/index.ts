@@ -39,3 +39,11 @@ export {
   getSubtree,
   getLastEntry,
 } from "./chain/proof-chain.js";
+
+export type { ValidationError } from "./chain/validation.js";
+
+export {
+  validateEntry,
+  validateChain,
+  validateSubtree,
+} from "./chain/validation.js";
