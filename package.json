@@ -1,0 +1,22 @@
+{
+  "name": "gridseal",
+  "private": true,
+  "version": "0.0.0",
+  "description": "Tamper-evident, cryptographically verifiable audit trail for AI decisions",
+  "scripts": {
+    "build": "pnpm -r run build",
+    "test": "pnpm -r run test",
+    "test:integration": "pnpm -r run test:integration",
+    "test:regression": "pnpm -r run test:regression",
+    "test:coverage": "pnpm -r run test:coverage",
+    "lint": "pnpm -r run lint",
+    "clean": "pnpm -r run clean"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "AGPL-3.0-only",
+  "packageManager": "pnpm@10.33.0",
+  "engines": {
+    "node": ">=22.0.0"
+  }
+}
