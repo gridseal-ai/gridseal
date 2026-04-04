@@ -24,3 +24,18 @@ export {
   computeEntryHash,
   serializeForHashing,
 } from "./chain/hash.js";
+
+export type {
+  ChainState,
+  ChainError,
+  AppendEntryInput,
+} from "./chain/proof-chain.js";
+
+export {
+  createChain,
+  appendEntry,
+  getChildren,
+  getRootEntries,
+  getSubtree,
+  getLastEntry,
+} from "./chain/proof-chain.js";
