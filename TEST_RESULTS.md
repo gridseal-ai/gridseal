@@ -80,6 +80,6 @@ Generated: 2026-04-05
 
 ## Known Issues
 
-- JWT verifyTenantToken: timingSafeEqual throws RangeError when signature length differs from expected. Should add length check before timingSafeEqual call.
-- confidenceLevelFromScore(NaN) does not throw; NaN bypasses range guard.
+- ~~JWT verifyTenantToken: timingSafeEqual throws RangeError when signature length differs from expected.~~ **FIXED**: Added buffer length check before timingSafeEqual call.
+- ~~confidenceLevelFromScore(NaN) does not throw; NaN bypasses range guard.~~ **FIXED**: Added Number.isNaN() guard.
 - Reports route uses DEFAULT_METADATA with empty sectors and null riskLevel, so Colorado SB-205 requirements with minimumRiskLevel:"high" will not match unless metadata is customized per request.
