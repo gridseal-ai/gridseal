@@ -9,6 +9,7 @@ import { createCertificateRoutes } from "./routes/certificates.js";
 import { createProvenanceRoutes } from "./routes/provenance.js";
 import { createReportRoutes } from "./routes/reports.js";
 import { createTrustPageRoutes } from "./routes/trust-page.js";
+import { createBadgeRoutes } from "./routes/badge.js";
 import { errorHandler } from "./middleware/error-handler.js";
 import { tenantAuth, apiKeyAuth } from "./middleware/auth.js";
 import type { StorageFactory } from "./storage-factory.js";
@@ -21,12 +22,14 @@ export type AppConfig = {
   readonly storage: StorageAdapter;
   readonly corsOrigins?: ReadonlyArray<string> | undefined;
   readonly apiKeys?: ReadonlyArray<string> | undefined;
+  readonly badgeBaseUrl?: string | undefined;
 };
 
 export type TenantAppConfig = {
   readonly storageFactory: StorageFactory;
   readonly corsOrigins?: ReadonlyArray<string> | undefined;
   readonly jwtSecret: string;
+  readonly badgeBaseUrl?: string | undefined;
 };
 
 function setupCors(app: Hono, origins: ReadonlyArray<string> | undefined): void {
@@ -62,6 +65,12 @@ export function createApp(config: AppConfig): Hono {
   setupCors(app, config.corsOrigins);
   app.use("*", requestId());
 
+  // Badge routes are public (no auth) so they must be mounted before auth middleware.
+  if (config.badgeBaseUrl) {
+    const badgeFactory: StorageFactory = () => config.storage;
+    app.route("/badge", createBadgeRoutes(badgeFactory, config.badgeBaseUrl));
+  }
+
   const keySet = new Set(config.apiKeys ?? []);
   app.use("*", apiKeyAuth({ apiKeys: keySet }));
 
@@ -81,6 +90,12 @@ export function createTenantApp(config: TenantAppConfig): Hono {
   app.onError(errorHandler);
   setupCors(app, config.corsOrigins);
   app.use("*", requestId());
+
+  // Badge routes are public (no auth) so they must be mounted before auth middleware.
+  if (config.badgeBaseUrl) {
+    app.route("/badge", createBadgeRoutes(config.storageFactory, config.badgeBaseUrl));
+  }
+
   app.use("*", tenantAuth({ mode: { type: "jwt", secret: config.jwtSecret } }));
 
   const resolver: StorageResolver = (c) => {

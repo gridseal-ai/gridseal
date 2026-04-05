@@ -36,3 +36,11 @@ export type {
 } from "./generator.js";
 
 export { generateTrustPage, generateTrustPageData } from "./generator.js";
+
+export type {
+  BadgeStatus,
+  BadgeData,
+  BadgeOptions,
+} from "./badge.js";
+
+export { computeBadgeData, renderBadgeSvg } from "./badge.js";
