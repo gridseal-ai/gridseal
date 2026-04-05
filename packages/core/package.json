@@ -13,6 +13,10 @@
     "./sqlite": {
       "types": "./dist/sqlite.d.ts",
       "import": "./dist/sqlite.js"
+    },
+    "./pdf": {
+      "types": "./dist/pdf.d.ts",
+      "import": "./dist/pdf.js"
     }
   },
   "scripts": {
@@ -48,18 +52,24 @@
     "dist"
   ],
   "peerDependencies": {
-    "better-sqlite3": ">=9.0.0"
+    "better-sqlite3": ">=9.0.0",
+    "pdfkit": ">=0.13.0"
   },
   "peerDependenciesMeta": {
     "better-sqlite3": {
+      "optional": true
+    },
+    "pdfkit": {
       "optional": true
     }
   },
   "devDependencies": {
     "@types/better-sqlite3": "^7.6.13",
     "@types/node": "^25.5.2",
+    "@types/pdfkit": "^0.13.9",
     "@vitest/coverage-v8": "^4.1.2",
     "better-sqlite3": "^12.8.0",
+    "pdfkit": "^0.16.0",
     "tsup": "^8.5.1",
     "typescript": "^6.0.2",
     "vitest": "^4.1.2"

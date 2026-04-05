@@ -134,3 +134,19 @@ export {
   tagEntry,
   tagEntryForRegulation,
 } from "./compliance/auto-tagger.js";
+
+export type {
+  ChainIntegrityResult,
+  RegulationSummary,
+  EntryRegulationMapping,
+  ComplianceGap,
+  CertificateSummary,
+  ReportStatistics,
+  ComplianceReport,
+  GenerateReportInput,
+} from "./export/compliance-report.js";
+
+export {
+  generateComplianceReport,
+  exportReportAsJson,
+} from "./export/compliance-report.js";
