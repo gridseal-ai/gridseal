@@ -54,8 +54,8 @@ describe("HIPAA 164.312(b) Audit Controls", () => {
     expect(hipaaAudit.jurisdiction).toContain("United States");
   });
 
-  it("defines 6 requirements", () => {
-    expect(HIPAA_AUDIT_REQUIREMENTS).toHaveLength(6);
+  it("defines 5 requirements", () => {
+    expect(HIPAA_AUDIT_REQUIREMENTS).toHaveLength(5);
   });
 
   it("has unique requirement IDs", () => {
@@ -105,20 +105,9 @@ describe("HIPAA 164.312(b) Audit Controls", () => {
     expect(req!.requiredFields).toContain("sequenceNumber");
   });
 
-  it("AI decision documentation requires certificate and provenance", () => {
-    const req = HIPAA_AUDIT_REQUIREMENTS.find(
-      (r) => r.requirementId === "hipaa-164-312-b-5",
-    );
-    expect(req).toBeDefined();
-    expect(req!.requiresReasoningCertificate).toBe(true);
-    expect(req!.requiresProvenance).toBe(true);
-    expect(req!.requiredFields).toContain("modelId");
-    expect(req!.requiredFields).toContain("confidenceScore");
-  });
-
   it("retention requirement references compliance metadata", () => {
     const req = HIPAA_AUDIT_REQUIREMENTS.find(
-      (r) => r.requirementId === "hipaa-164-312-b-6",
+      (r) => r.requirementId === "hipaa-164-312-b-5",
     );
     expect(req).toBeDefined();
     expect(req!.requiredFields).toContain("timestamp");
@@ -187,6 +176,6 @@ describe("Regulation registry", () => {
         EU_AI_ACT_REQUIREMENTS.length +
         HIPAA_AUDIT_REQUIREMENTS.length,
     );
-    expect(total).toBe(39);
+    expect(total).toBe(38);
   });
 });
