@@ -31,6 +31,17 @@ export type {
 export { wrapHttp } from "./adapters/http.js";
 
 export type {
+  CapturedToolUse,
+  CapturedToolUseMessage,
+  ToolUseCaptureError,
+  GridSealAnthropicToolUse,
+  GridSealAnthropicToolUseOptions,
+  CreateToolUseMessageOptions,
+} from "./adapters/anthropic-tool-use.js";
+
+export { wrapAnthropicToolUse } from "./adapters/anthropic-tool-use.js";
+
+export type {
   CapturedToolCall,
   McpCaptureError,
   McpContentBlock,
