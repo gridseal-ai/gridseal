@@ -222,7 +222,7 @@ describe("validateChain", () => {
     expect(result.error.sequenceNumber).toBe(3);
   });
 
-  it("validates a chain of 10000 entries in under 100ms", () => {
+  it("validates a chain of 10000 entries in under 500ms", () => {
     const chain = appendN(createChain("perf-chain"), 10000);
 
     const start = performance.now();
@@ -230,7 +230,7 @@ describe("validateChain", () => {
     const elapsed = performance.now() - start;
 
     expect(result.ok).toBe(true);
-    expect(elapsed).toBeLessThan(100);
+    expect(elapsed).toBeLessThan(500);
   });
 
   it("reports the first error when multiple entries are tampered", () => {

@@ -1,0 +1,37 @@
+{
+  "name": "@gridseal/dashboard",
+  "version": "0.1.0",
+  "private": true,
+  "description": "GridSeal Dashboard - Audit trail explorer and chain verification UI",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage",
+    "lint": "tsc --noEmit",
+    "clean": "rm -rf dist"
+  },
+  "author": "Gridseal by Celestir",
+  "license": "AGPL-3.0-only",
+  "dependencies": {
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "react-router": "^7.6.1"
+  },
+  "devDependencies": {
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.3.0",
+    "@types/react": "^19.1.6",
+    "@types/react-dom": "^19.1.6",
+    "@vitejs/plugin-react": "^4.5.2",
+    "@vitest/coverage-v8": "^4.1.2",
+    "jsdom": "^26.1.0",
+    "tailwindcss": "^4.2.2",
+    "@tailwindcss/vite": "^4.2.2",
+    "typescript": "^6.0.2",
+    "vite": "^6.3.5",
+    "vitest": "^4.1.2"
+  }
+}
