@@ -7,3 +7,13 @@ export type {
 } from "./adapters/openai.js";
 
 export { wrapOpenAI } from "./adapters/openai.js";
+
+export type {
+  CapturedMessage,
+  CaptureError as AnthropicCaptureError,
+  GridSealAnthropic,
+  GridSealAnthropicOptions,
+  CreateMessageOptions,
+} from "./adapters/anthropic.js";
+
+export { wrapAnthropic } from "./adapters/anthropic.js";
