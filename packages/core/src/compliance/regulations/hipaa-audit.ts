@@ -88,42 +88,13 @@ const auditAccessTracking: RegulatoryRequirement = {
   requiresProvenance: false,
 };
 
-const auditAiDecisionRecord: RegulatoryRequirement = {
+const auditRetention: RegulatoryRequirement = {
   requirementId: `${REG_ID}-5`,
   regulationId: REG_ID,
-  sectionRef: "164.312(b) / 164.530(j)",
-  title: "AI-assisted clinical decision documentation",
-  description:
-    "When AI systems assist in clinical decisions involving ePHI, audit records must capture sufficient detail about the AI model, its inputs, outputs, and confidence to support accountability and patient safety reviews.",
-  applicableSectors: ["healthcare"],
-  applicableDecisionTypes: [
-    "classification",
-    "recommendation",
-    "extraction",
-    "summarization",
-  ],
-  applicableDataTypes: ["health", "personal"],
-  applicableAuthorityLevels: ["autonomous", "human_in_the_loop", "human_on_the_loop"],
-  minimumRiskLevel: null,
-  requiredFields: [
-    "modelId",
-    "modelProvider",
-    "inputHash",
-    "outputHash",
-    "decisionType",
-    "confidenceScore",
-  ],
-  requiresReasoningCertificate: true,
-  requiresProvenance: true,
-};
-
-const auditRetention: RegulatoryRequirement = {
-  requirementId: `${REG_ID}-6`,
-  regulationId: REG_ID,
-  sectionRef: "164.312(b) / 164.530(j)(2)",
+  sectionRef: "164.530(j)(2)",
   title: "Audit record retention (6 years)",
   description:
-    "Audit records related to ePHI must be retained for a minimum of six years from the date of creation or the date when it was last in effect, whichever is later.",
+    "Documentation of policies, procedures, actions, activities, or assessments required by the HIPAA rules must be retained for a minimum of six years from the date of creation or the date when it was last in effect, whichever is later.",
   applicableSectors: ["healthcare"],
   applicableDecisionTypes: [],
   applicableDataTypes: ["health"],
@@ -139,7 +110,6 @@ export const HIPAA_AUDIT_REQUIREMENTS: ReadonlyArray<RegulatoryRequirement> = [
   auditTrailIntegrity,
   auditUserIdentification,
   auditAccessTracking,
-  auditAiDecisionRecord,
   auditRetention,
 ];
 

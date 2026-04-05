@@ -215,14 +215,14 @@ describe("NIST AI RMF", () => {
   });
 });
 
-describe("EU AI Act (Articles 12 & 13)", () => {
+describe("EU AI Act (Articles 12-15)", () => {
   it("has correct regulation metadata", () => {
     assertValidRegulation(euAiAct);
     expect(euAiAct.regulationId).toBe("eu-ai-act");
     expect(euAiAct.jurisdiction).toContain("European Union");
   });
 
-  it("defines 8 requirements across Articles 12 and 13", () => {
+  it("defines 8 requirements across Articles 12, 13, 14, and 15", () => {
     expect(EU_AI_ACT_REQUIREMENTS).toHaveLength(8);
   });
 
@@ -247,7 +247,23 @@ describe("EU AI Act (Articles 12 & 13)", () => {
     const art13 = EU_AI_ACT_REQUIREMENTS.filter((r) =>
       r.sectionRef.startsWith("Article 13"),
     );
-    expect(art13).toHaveLength(4);
+    expect(art13).toHaveLength(2);
+  });
+
+  it("Article 14 covers human oversight", () => {
+    const art14 = EU_AI_ACT_REQUIREMENTS.filter((r) =>
+      r.sectionRef.startsWith("Article 14"),
+    );
+    expect(art14).toHaveLength(1);
+    expect(art14[0].title.toLowerCase()).toMatch(/human oversight/);
+  });
+
+  it("Article 15 covers accuracy and robustness", () => {
+    const art15 = EU_AI_ACT_REQUIREMENTS.filter((r) =>
+      r.sectionRef.startsWith("Article 15"),
+    );
+    expect(art15).toHaveLength(1);
+    expect(art15[0].title.toLowerCase()).toMatch(/accuracy|robustness/);
   });
 
   it("all requirements mandate high-risk minimum", () => {
@@ -294,6 +310,24 @@ describe("EU AI Act (Articles 12 & 13)", () => {
     expect(req!.requiresProvenance).toBe(true);
     expect(req!.requiredFields).toContain("modelId");
     expect(req!.requiredFields).toContain("modelProvider");
+  });
+
+  it("Article 14(1) requires human oversight fields", () => {
+    const req = EU_AI_ACT_REQUIREMENTS.find(
+      (r) => r.requirementId === "eu-ai-act-art14-1",
+    );
+    expect(req).toBeDefined();
+    expect(req!.requiredFields).toContain("actorId");
+    expect(req!.requiredFields).toContain("annotation");
+  });
+
+  it("Article 15(1) requires accuracy metrics and provenance", () => {
+    const req = EU_AI_ACT_REQUIREMENTS.find(
+      (r) => r.requirementId === "eu-ai-act-art15-1",
+    );
+    expect(req).toBeDefined();
+    expect(req!.requiresProvenance).toBe(true);
+    expect(req!.requiredFields).toContain("confidenceScore");
   });
 });
 
