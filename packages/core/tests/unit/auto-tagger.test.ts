@@ -377,7 +377,7 @@ describe("tagEntry against Colorado SB 205", () => {
 
     expect(result.regulationIds).toContain("colorado-sb205");
     const reqIds = result.matches.map((m) => m.requirement.requirementId);
-    expect(reqIds).toContain("colorado-sb205-6-1-1703-a");
+    expect(reqIds).toContain("colorado-sb205-6-1-1703-3");
   });
 
   it("does not match Colorado requirements for minimal risk entries", () => {
@@ -410,9 +410,9 @@ describe("tagEntry against Colorado SB 205", () => {
     const result = tagEntryForRegulation(entry, metadata, "colorado-sb205");
 
     const reqIds = result.matches.map((m) => m.requirement.requirementId);
-    expect(reqIds).toContain("colorado-sb205-6-1-1703-c");
+    expect(reqIds).toContain("colorado-sb205-6-1-1703-4b");
     const explanationMatch = result.matches.find(
-      (m) => m.requirement.requirementId === "colorado-sb205-6-1-1703-c",
+      (m) => m.requirement.requirementId === "colorado-sb205-6-1-1703-4b",
     );
     expect(explanationMatch!.satisfied).toBe(true);
   });
@@ -434,7 +434,7 @@ describe("tagEntry against Colorado SB 205", () => {
     const result = tagEntryForRegulation(entry, metadata, "colorado-sb205");
 
     const explanationMatch = result.matches.find(
-      (m) => m.requirement.requirementId === "colorado-sb205-6-1-1703-c",
+      (m) => m.requirement.requirementId === "colorado-sb205-6-1-1703-4b",
     );
     expect(explanationMatch).toBeDefined();
     expect(explanationMatch!.satisfied).toBe(false);
@@ -460,7 +460,7 @@ describe("tagEntry against Colorado SB 205", () => {
     const result = tagEntryForRegulation(entry, metadata, "colorado-sb205");
 
     const reqIds = result.matches.map((m) => m.requirement.requirementId);
-    expect(reqIds).toContain("colorado-sb205-6-1-1703-d");
+    expect(reqIds).toContain("colorado-sb205-6-1-1703-4b-appeal");
   });
 
   it("does not match appeal process for human_in_the_loop authority", () => {
@@ -474,7 +474,7 @@ describe("tagEntry against Colorado SB 205", () => {
     const result = tagEntryForRegulation(entry, metadata, "colorado-sb205");
 
     const reqIds = result.matches.map((m) => m.requirement.requirementId);
-    expect(reqIds).not.toContain("colorado-sb205-6-1-1703-d");
+    expect(reqIds).not.toContain("colorado-sb205-6-1-1703-4b-appeal");
   });
 
   it("matches data governance for biometric data at high risk", () => {
@@ -491,7 +491,7 @@ describe("tagEntry against Colorado SB 205", () => {
     const result = tagEntryForRegulation(entry, metadata, "colorado-sb205");
 
     const reqIds = result.matches.map((m) => m.requirement.requirementId);
-    expect(reqIds).toContain("colorado-sb205-6-1-1703-f");
+    expect(reqIds).toContain("colorado-sb205-6-1-1703-3-data");
   });
 });
 
