@@ -21,7 +21,6 @@ export function ProvenancePage(): ReactNode {
 
   function load(): void {
     if (provenanceId === undefined) return;
-    setState({ status: "loading" });
     void getProvenance(provenanceId).then((result) => {
       if (result.ok) {
         setState({ status: "loaded", provenance: result.data.provenance });
@@ -42,7 +41,7 @@ export function ProvenancePage(): ReactNode {
   }
 
   if (state.status === "error") {
-    return <ErrorMessage message={state.message} onRetry={load} />;
+    return <ErrorMessage message={state.message} onRetry={() => { setState({ status: "loading" }); load(); }} />;
   }
 
   const { provenance } = state;

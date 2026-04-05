@@ -20,7 +20,6 @@ export function EntryDetailPage(): ReactNode {
 
   function load(): void {
     if (chainId === undefined || entryId === undefined) return;
-    setState({ status: "loading" });
     void Promise.all([
       getEntry(chainId, entryId),
       getEntryChildren(chainId, entryId),
@@ -48,7 +47,7 @@ export function EntryDetailPage(): ReactNode {
   }
 
   if (state.status === "error") {
-    return <ErrorMessage message={state.message} onRetry={load} />;
+    return <ErrorMessage message={state.message} onRetry={() => { setState({ status: "loading" }); load(); }} />;
   }
 
   const { entry, children } = state;

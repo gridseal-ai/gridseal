@@ -14,7 +14,6 @@ export function ChainsPage(): ReactNode {
   const [state, setState] = useState<PageState>({ status: "loading" });
 
   function load(): void {
-    setState({ status: "loading" });
     void listChains().then((result) => {
       if (result.ok) {
         setState({ status: "loaded", chains: result.data.chains });
@@ -31,7 +30,7 @@ export function ChainsPage(): ReactNode {
   }
 
   if (state.status === "error") {
-    return <ErrorMessage message={state.message} onRetry={load} />;
+    return <ErrorMessage message={state.message} onRetry={() => { setState({ status: "loading" }); load(); }} />;
   }
 
   const { chains } = state;

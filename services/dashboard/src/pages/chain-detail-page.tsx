@@ -22,7 +22,6 @@ export function ChainDetailPage(): ReactNode {
 
   function load(): void {
     if (chainId === undefined) return;
-    setState({ status: "loading" });
     void Promise.all([
       getChain(chainId),
       getChainEntries(chainId, offset, PAGE_SIZE),
@@ -52,7 +51,7 @@ export function ChainDetailPage(): ReactNode {
   }
 
   if (state.status === "error") {
-    return <ErrorMessage message={state.message} onRetry={load} />;
+    return <ErrorMessage message={state.message} onRetry={() => { setState({ status: "loading" }); load(); }} />;
   }
 
   const { chain, entries, total } = state;
@@ -128,7 +127,7 @@ export function ChainDetailPage(): ReactNode {
               <button
                 type="button"
                 disabled={offset === 0}
-                onClick={() => setOffset(Math.max(0, offset - PAGE_SIZE))}
+                onClick={() => { setState({ status: "loading" }); setOffset(Math.max(0, offset - PAGE_SIZE)); }}
                 className="rounded-md bg-white px-3 py-1.5 text-sm font-medium text-gray-700 border border-gray-300 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Previous
@@ -139,7 +138,7 @@ export function ChainDetailPage(): ReactNode {
               <button
                 type="button"
                 disabled={offset + PAGE_SIZE >= total}
-                onClick={() => setOffset(offset + PAGE_SIZE)}
+                onClick={() => { setState({ status: "loading" }); setOffset(offset + PAGE_SIZE); }}
                 className="rounded-md bg-white px-3 py-1.5 text-sm font-medium text-gray-700 border border-gray-300 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Next
