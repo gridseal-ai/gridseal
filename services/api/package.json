@@ -1,0 +1,51 @@
+{
+  "name": "@gridseal/api",
+  "version": "0.1.0",
+  "description": "REST API for GridSeal audit trail management",
+  "type": "module",
+  "main": "./dist/index.js",
+  "scripts": {
+    "build": "tsup --tsconfig tsconfig.build.json",
+    "start": "node dist/index.js",
+    "dev": "tsx watch src/index.ts",
+    "test": "vitest run",
+    "test:integration": "vitest run --config vitest.integration.config.ts",
+    "test:coverage": "vitest run --coverage",
+    "lint": "tsc --noEmit",
+    "clean": "rm -rf dist"
+  },
+  "keywords": [
+    "audit-trail",
+    "gridseal",
+    "api",
+    "hono"
+  ],
+  "author": "Gridseal by Celestir",
+  "license": "AGPL-3.0-only",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/celestir/gridseal.git",
+    "directory": "services/api"
+  },
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "files": [
+    "dist"
+  ],
+  "dependencies": {
+    "@gridseal/core": "workspace:*",
+    "@hono/node-server": "^1.14.3",
+    "hono": "^4.7.10",
+    "pino": "^9.7.0",
+    "zod": "^3.25.3"
+  },
+  "devDependencies": {
+    "@types/node": "^25.5.2",
+    "@vitest/coverage-v8": "^4.1.2",
+    "tsup": "^8.5.1",
+    "tsx": "^4.19.4",
+    "typescript": "^6.0.2",
+    "vitest": "^4.1.2"
+  }
+}
