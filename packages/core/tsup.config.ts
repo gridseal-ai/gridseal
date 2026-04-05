@@ -13,4 +13,10 @@ export default defineConfig([
     dts: true,
     external: ["better-sqlite3"],
   },
+  {
+    entry: { pdf: "src/pdf.ts" },
+    format: ["esm"],
+    dts: true,
+    external: ["pdfkit"],
+  },
 ]);
