@@ -125,3 +125,12 @@ export {
   getRegulationById,
   getRegulationIds,
 } from "./compliance/regulations/registry.js";
+
+export type { EntryMetadata, AutoTagResult } from "./compliance/auto-tagger.js";
+
+export {
+  extractComplianceContext,
+  matchRequirement,
+  tagEntry,
+  tagEntryForRegulation,
+} from "./compliance/auto-tagger.js";

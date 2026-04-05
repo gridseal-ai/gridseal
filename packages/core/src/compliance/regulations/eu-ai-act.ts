@@ -130,13 +130,15 @@ const transparencyInstructions: RegulatoryRequirement = {
   requiresProvenance: true,
 };
 
-const transparencyHumanOversight: RegulatoryRequirement = {
-  requirementId: `${REG_ID}-art13-3`,
+/* ---------- Article 14: Human oversight ---------- */
+
+const humanOversight: RegulatoryRequirement = {
+  requirementId: `${REG_ID}-art14-1`,
   regulationId: REG_ID,
-  sectionRef: "Article 13(3)",
-  title: "Human oversight information",
+  sectionRef: "Article 14(1)",
+  title: "Human oversight measures",
   description:
-    "The information about human oversight measures shall include the measures put in place to facilitate the interpretation of the outputs by the deployers, including the technical capabilities and characteristics.",
+    "High-risk AI systems shall be designed and developed in such a way, including with appropriate human-machine interface tools, that they can be effectively overseen by natural persons during the period in which they are in use.",
   applicableSectors: [],
   applicableDecisionTypes: [],
   applicableDataTypes: ["personal", "sensitive", "health", "biometric"],
@@ -147,13 +149,15 @@ const transparencyHumanOversight: RegulatoryRequirement = {
   requiresProvenance: false,
 };
 
-const transparencyAccuracy: RegulatoryRequirement = {
-  requirementId: `${REG_ID}-art13-4`,
+/* ---------- Article 15: Accuracy, robustness, cybersecurity ---------- */
+
+const accuracyRobustness: RegulatoryRequirement = {
+  requirementId: `${REG_ID}-art15-1`,
   regulationId: REG_ID,
-  sectionRef: "Article 13(4)",
-  title: "Accuracy and performance metrics disclosure",
+  sectionRef: "Article 15(1)",
+  title: "Accuracy, robustness, and cybersecurity",
   description:
-    "High-risk AI systems shall include information about known or foreseeable circumstances related to the use of the system, including accuracy levels, robustness expectations, and known limitations.",
+    "High-risk AI systems shall be designed and developed in such a way that they achieve an appropriate level of accuracy, robustness, and cybersecurity, and that they perform consistently in those respects throughout their lifecycle.",
   applicableSectors: [],
   applicableDecisionTypes: [],
   applicableDataTypes: [],
@@ -171,8 +175,8 @@ export const EU_AI_ACT_REQUIREMENTS: ReadonlyArray<RegulatoryRequirement> = [
   recordKeepingPeriod,
   transparencyDesign,
   transparencyInstructions,
-  transparencyHumanOversight,
-  transparencyAccuracy,
+  humanOversight,
+  accuracyRobustness,
 ];
 
 export const euAiAct: Regulation = {
@@ -181,6 +185,6 @@ export const euAiAct: Regulation = {
   jurisdiction: "European Union",
   version: "2024-08-01",
   description:
-    "The EU AI Act establishes harmonized rules for AI systems in the European Union. Article 12 mandates automatic logging and record-keeping for high-risk AI systems. Article 13 requires transparency in design, instructions for use, human oversight information, and accuracy disclosure.",
+    "The EU AI Act establishes harmonized rules for AI systems in the European Union. Article 12 mandates automatic logging and record-keeping for high-risk AI systems. Article 13 requires transparency in design and instructions for use. Article 14 mandates human oversight measures. Article 15 requires appropriate levels of accuracy, robustness, and cybersecurity.",
   requirements: EU_AI_ACT_REQUIREMENTS,
 };
