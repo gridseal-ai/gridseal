@@ -540,3 +540,36 @@ describe("wrapOpenAI", () => {
     expect(stored[0]!.actorId).toBe("a1");
   });
 });
+
+describe("GridSealOpenAI overhead", () => {
+  it("adds less than 2ms overhead per call with in-memory storage", async () => {
+    const storage = createInMemoryAdapter();
+    const client = makeMockClient();
+    const wrapped = wrapOpenAI({
+      client,
+      chainId: "bench-chain",
+      storage,
+    });
+
+    // Warm up
+    for (let i = 0; i < 5; i++) {
+      await wrapped.createCompletion({
+        messages: [{ role: "user", content: `Warmup ${i}` }],
+      });
+    }
+
+    // Measure: run 100 calls, record the overhead for each
+    const times: number[] = [];
+    for (let i = 0; i < 100; i++) {
+      const start = performance.now();
+      await wrapped.createCompletion({
+        messages: [{ role: "user", content: `Bench ${i}` }],
+      });
+      times.push(performance.now() - start);
+    }
+
+    times.sort((a, b) => a - b);
+    const p99 = times[Math.floor(times.length * 0.99)]!;
+    expect(p99).toBeLessThan(2);
+  });
+});
