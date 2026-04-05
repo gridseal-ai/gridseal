@@ -165,18 +165,13 @@ describe("API key brute force resistance", () => {
     }
   });
 
-  it("handles JWT with valid structure but wrong-length signature without crashing", async () => {
-    // BUG FINDING: crypto.timingSafeEqual throws RangeError when signature
-    // length differs from expected. The error handler catches this as 500.
-    // Ideally this should return 403, not 500. Filed for follow-up.
+  it("returns 403 for JWT with valid structure but wrong-length signature", async () => {
     const wrongLengthSigToken = `${Buffer.from(JSON.stringify({ alg: "HS256", typ: "JWT" })).toString("base64url")}.${Buffer.from(JSON.stringify({ tenantId: "x" })).toString("base64url")}.fakesig`;
     const res = await app.request("/chains", {
       method: "GET",
       headers: { Authorization: `Bearer ${wrongLengthSigToken}` },
     });
-    // Current behavior: 500 due to timingSafeEqual RangeError on length mismatch.
-    // Expected ideal behavior: 403. This is a security hardening opportunity.
-    expect([403, 500]).toContain(res.status);
+    expect(res.status).toBe(403);
   });
 
   it("rejects expired JWT tokens", async () => {
