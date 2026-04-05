@@ -196,3 +196,25 @@ export {
   enforcePolicy,
   enforcementToTags,
 } from "./compliance/authority/enforcement.js";
+
+export type {
+  CycloneDxBom,
+  CdxComponent,
+  CdxModelCard,
+  CdxMetadata,
+  CdxPerformanceMetric,
+  CdxDataset,
+  CdxExternalReference,
+  CdxHash,
+  CdxLicense,
+  CdxOrganization,
+  GenerateBomInput,
+  BomGenerationError,
+} from "./provenance/cyclonedx.js";
+
+export {
+  generateCycloneDxBom,
+  exportBomAsJson,
+  exportBomAsCleanJson,
+  stripNulls,
+} from "./provenance/cyclonedx.js";

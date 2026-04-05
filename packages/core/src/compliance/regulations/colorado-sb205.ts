@@ -3,9 +3,9 @@ import type { Regulation, RegulatoryRequirement } from "../types.js";
 const REG_ID = "colorado-sb205";
 
 const impactAssessment: RegulatoryRequirement = {
-  requirementId: `${REG_ID}-6-1-1703-a`,
+  requirementId: `${REG_ID}-6-1-1703-3`,
   regulationId: REG_ID,
-  sectionRef: "Section 6-1-1703(a)",
+  sectionRef: "Section 6-1-1703(3)",
   title: "Impact assessment for high-risk AI systems",
   description:
     "Deployers of high-risk AI systems must complete an impact assessment before deploying the system, documenting the purpose, intended benefits, potential risks, and the categories of data processed.",
@@ -25,9 +25,9 @@ const impactAssessment: RegulatoryRequirement = {
 };
 
 const disclosureToConsumers: RegulatoryRequirement = {
-  requirementId: `${REG_ID}-6-1-1703-b`,
+  requirementId: `${REG_ID}-6-1-1703-4a`,
   regulationId: REG_ID,
-  sectionRef: "Section 6-1-1703(b)",
+  sectionRef: "Section 6-1-1703(4)(a)",
   title: "Disclosure to consumers interacting with AI",
   description:
     "Deployers must disclose to consumers that they are interacting with an AI system and provide a summary of the system's purpose, limitations, and the nature of the consequential decision.",
@@ -46,9 +46,9 @@ const disclosureToConsumers: RegulatoryRequirement = {
 };
 
 const explanationOfDecision: RegulatoryRequirement = {
-  requirementId: `${REG_ID}-6-1-1703-c`,
+  requirementId: `${REG_ID}-6-1-1703-4b`,
   regulationId: REG_ID,
-  sectionRef: "Section 6-1-1703(c)",
+  sectionRef: "Section 6-1-1703(4)(b)",
   title: "Explanation of consequential AI decisions",
   description:
     "When an AI system makes or substantially contributes to a consequential decision, the deployer must provide the consumer with a statement disclosing the principal reasons for the decision, including the data that influenced it.",
@@ -80,9 +80,9 @@ const explanationOfDecision: RegulatoryRequirement = {
 };
 
 const appealProcess: RegulatoryRequirement = {
-  requirementId: `${REG_ID}-6-1-1703-d`,
+  requirementId: `${REG_ID}-6-1-1703-4b-appeal`,
   regulationId: REG_ID,
-  sectionRef: "Section 6-1-1703(d)",
+  sectionRef: "Section 6-1-1703(4)(b)",
   title: "Opportunity to appeal consequential decisions",
   description:
     "Deployers must provide consumers with an opportunity to appeal a consequential decision made by an AI system and to request human review of the decision.",
@@ -104,9 +104,9 @@ const appealProcess: RegulatoryRequirement = {
 };
 
 const riskManagementProgram: RegulatoryRequirement = {
-  requirementId: `${REG_ID}-6-1-1703-e`,
+  requirementId: `${REG_ID}-6-1-1703-2`,
   regulationId: REG_ID,
-  sectionRef: "Section 6-1-1703(e)",
+  sectionRef: "Section 6-1-1703(2)",
   title: "Risk management policy and program",
   description:
     "Deployers must implement a risk management policy and program governing the deployment and use of high-risk AI systems, including governance, oversight measures, and regular assessments.",
@@ -121,9 +121,9 @@ const riskManagementProgram: RegulatoryRequirement = {
 };
 
 const dataGovernance: RegulatoryRequirement = {
-  requirementId: `${REG_ID}-6-1-1703-f`,
+  requirementId: `${REG_ID}-6-1-1703-3-data`,
   regulationId: REG_ID,
-  sectionRef: "Section 6-1-1703(f)",
+  sectionRef: "Section 6-1-1703(3)",
   title: "Data governance for training and operation",
   description:
     "Developers and deployers must maintain governance practices over the data used to train, test, and operate high-risk AI systems, including measures to detect and mitigate bias.",

@@ -56,7 +56,7 @@ export type AuthorityLevel = (typeof AUTHORITY_LEVELS)[number];
 
 /** A single regulatory requirement within a regulation. */
 export type RegulatoryRequirement = {
-  /** Unique identifier for this requirement (e.g., "CO-SB205-6-1-1703-a"). */
+  /** Unique identifier for this requirement (e.g., "colorado-sb205-6-1-1703-3"). */
   readonly requirementId: string;
   /** The regulation this requirement belongs to. */
   readonly regulationId: string;
