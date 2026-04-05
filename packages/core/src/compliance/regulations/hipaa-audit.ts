@@ -91,10 +91,10 @@ const auditAccessTracking: RegulatoryRequirement = {
 const auditRetention: RegulatoryRequirement = {
   requirementId: `${REG_ID}-5`,
   regulationId: REG_ID,
-  sectionRef: "164.530(j)(2)",
+  sectionRef: "164.316(b)(2)(i)",
   title: "Audit record retention (6 years)",
   description:
-    "Documentation of policies, procedures, actions, activities, or assessments required by the HIPAA rules must be retained for a minimum of six years from the date of creation or the date when it was last in effect, whichever is later.",
+    "Documentation required by the HIPAA Security Rule must be retained for a period of six years from the date of its creation or the date when it last was in effect, whichever is later.",
   applicableSectors: ["healthcare"],
   applicableDecisionTypes: [],
   applicableDataTypes: ["health"],

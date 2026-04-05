@@ -69,6 +69,29 @@ export {
 } from "./certificate/reasoning-certificate.js";
 
 export type {
+  Premise,
+  TraceStep,
+  Conclusion,
+  DecisionContext,
+  CertificateTemplate,
+  TemplateValidationResult,
+} from "./certificate/engine.js";
+
+export {
+  CLASSIFICATION_TEMPLATE,
+  RECOMMENDATION_TEMPLATE,
+  APPROVAL_DENIAL_TEMPLATE,
+  RISK_SCORING_TEMPLATE,
+  CERTIFICATE_TEMPLATES,
+  confidenceLevelFromScore,
+  validateAgainstTemplate,
+  generateCertificate,
+  generateCertificateWithTemplate,
+  getTemplateNames,
+  getTemplate,
+} from "./certificate/engine.js";
+
+export type {
   ModelProvenance,
   CreateProvenanceInput,
   ModelType,
