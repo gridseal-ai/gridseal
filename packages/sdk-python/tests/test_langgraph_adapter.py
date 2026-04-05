@@ -376,3 +376,30 @@ class TestWrapLangGraph:
             model_provider="my-graph",
         )
         assert wrapped.model_provider == "my-graph"
+
+
+class TestGridSealLangGraphOverhead:
+    """Verify SDK wrapper adds less than 2ms overhead per call."""
+
+    async def test_adds_less_than_2ms_overhead_per_call(self) -> None:
+        import time
+
+        storage = InMemoryAdapter()
+        wrapped = wrap_langgraph(chain_id="bench-chain", storage=storage)
+        node = wrapped.wrap_node("bench_node", _mock_node)
+
+        # Warm up
+        for i in range(5):
+            await node({"messages": [f"Warmup {i}"], "count": i})
+
+        # Measure 100 calls
+        times: list[float] = []
+        for i in range(100):
+            start = time.perf_counter()
+            await node({"messages": [f"Bench {i}"], "count": i})
+            elapsed_ms = (time.perf_counter() - start) * 1000
+            times.append(elapsed_ms)
+
+        times.sort()
+        p99 = times[int(len(times) * 0.99)]
+        assert p99 < 2, f"p99 overhead was {p99:.3f}ms, expected < 2ms"
