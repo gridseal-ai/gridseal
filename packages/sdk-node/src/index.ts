@@ -17,3 +17,15 @@ export type {
 } from "./adapters/anthropic.js";
 
 export { wrapAnthropic } from "./adapters/anthropic.js";
+
+export type {
+  CapturedHttpResponse,
+  HttpCaptureError,
+  GridSealHttp,
+  GridSealHttpOptions,
+  HttpCallOptions,
+  HttpCallFn,
+  ResponseExtractors,
+} from "./adapters/http.js";
+
+export { wrapHttp } from "./adapters/http.js";
