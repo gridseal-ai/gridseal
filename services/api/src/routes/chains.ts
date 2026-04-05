@@ -9,7 +9,7 @@ import {
   getSubtree,
 } from "@gridseal/core";
 import type { AppendEntryInput } from "@gridseal/core";
-import { appendEntrySchema, paginationSchema } from "../validation/schemas.js";
+import { appendEntrySchema, entryListSchema } from "../validation/schemas.js";
 import { parseBody, parseQuery } from "../middleware/validate.js";
 
 /** Build a ChainState from storage for validation and chain operations. */
@@ -43,23 +43,51 @@ export function createChainRoutes(storage: StorageAdapter): Hono {
     return c.json({ chainId, entryCount: length });
   });
 
-  /** Get paginated entries for a chain. */
+  /** Get paginated entries for a chain with optional filters. */
   app.get("/:chainId/entries", async (c) => {
     const chainId = c.req.param("chainId");
-    const parsed = parseQuery(c, paginationSchema);
+    const parsed = parseQuery(c, entryListSchema);
     if (!parsed.ok) {
       return parsed.response;
     }
-    const { offset, limit } = parsed.value as { offset: number; limit: number };
+    const { offset, limit, startDate, endDate, modelId, actorId, sessionId } =
+      parsed.value as {
+        offset: number;
+        limit: number;
+        startDate?: string;
+        endDate?: string;
+        modelId?: string;
+        actorId?: string;
+        sessionId?: string;
+      };
     const allEntries = await storage.getEntriesByChainId(chainId);
     if (allEntries.length === 0) {
       return c.json({ error: `Chain not found: ${chainId}` }, 404);
     }
-    const entries = allEntries.slice(offset, offset + limit);
+
+    let filtered = [...allEntries];
+
+    if (startDate !== undefined) {
+      filtered = filtered.filter((e) => e.timestamp >= startDate);
+    }
+    if (endDate !== undefined) {
+      filtered = filtered.filter((e) => e.timestamp <= endDate);
+    }
+    if (modelId !== undefined) {
+      filtered = filtered.filter((e) => e.modelId === modelId);
+    }
+    if (actorId !== undefined) {
+      filtered = filtered.filter((e) => e.actorId === actorId);
+    }
+    if (sessionId !== undefined) {
+      filtered = filtered.filter((e) => e.sessionId === sessionId);
+    }
+
+    const paginated = filtered.slice(offset, offset + limit);
     return c.json({
       chainId,
-      entries,
-      total: allEntries.length,
+      entries: paginated,
+      total: filtered.length,
       offset,
       limit,
     });

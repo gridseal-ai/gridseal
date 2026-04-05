@@ -143,3 +143,21 @@ export const paginationSchema = z.object({
   offset: z.coerce.number().int().nonnegative().default(0),
   limit: z.coerce.number().int().positive().max(1000).default(100),
 });
+
+/** Schema for entry listing with optional filters. */
+export const entryListSchema = z.object({
+  offset: z.coerce.number().int().nonnegative().default(0),
+  limit: z.coerce.number().int().positive().max(1000).default(100),
+  startDate: z.string().regex(/^\d{4}-\d{2}-\d{2}/, "Must be ISO 8601 date or datetime").optional(),
+  endDate: z.string().regex(/^\d{4}-\d{2}-\d{2}/, "Must be ISO 8601 date or datetime").optional(),
+  modelId: z.string().optional(),
+  actorId: z.string().optional(),
+  sessionId: z.string().optional(),
+});
+
+export type EntryListQuery = z.infer<typeof entryListSchema>;
+
+/** Schema for compliance report query parameters. */
+export const reportQuerySchema = z.object({
+  chainId: z.string().min(1, "chainId query parameter is required"),
+});
