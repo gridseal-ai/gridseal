@@ -39,7 +39,7 @@ import { CERTIFICATE_TEMPLATES } from "./engine-types.js";
  * Derives a confidence level from a numeric score.
  */
 export function confidenceLevelFromScore(score: number): ConfidenceLevel {
-  if (score < 0 || score > 1) {
+  if (Number.isNaN(score) || score < 0 || score > 1) {
     throw new Error(`Confidence score must be in [0, 1], got ${score}`);
   }
   if (score < 0.2) return "very_low";

@@ -158,11 +158,10 @@ describe("confidenceLevelFromScore exact boundaries", () => {
     expect(confidenceLevelFromScore(1.0)).toBe("very_high");
   });
 
-  it("does not throw for NaN (NaN bypasses range check)", () => {
-    // NaN < 0 is false, NaN > 1 is false, so the guard passes.
-    // NaN < 0.2 is false, etc., so it falls through to "very_high".
-    // This documents actual behavior, not ideal behavior.
-    expect(confidenceLevelFromScore(NaN)).toBe("very_high");
+  it("throws for NaN input", () => {
+    expect(() => confidenceLevelFromScore(NaN)).toThrow(
+      "Confidence score must be in [0, 1], got NaN",
+    );
   });
 });
 

@@ -79,10 +79,10 @@ export function verifyTenantToken(
     secret,
   );
 
-  if (!crypto.timingSafeEqual(
-    Buffer.from(signatureEncoded, "utf-8"),
-    Buffer.from(expectedSignature, "utf-8"),
-  )) {
+  const signatureBuf = Buffer.from(signatureEncoded, "utf-8");
+  const expectedBuf = Buffer.from(expectedSignature, "utf-8");
+
+  if (signatureBuf.length !== expectedBuf.length || !crypto.timingSafeEqual(signatureBuf, expectedBuf)) {
     return { ok: false, error: "Invalid signature" };
   }
 
