@@ -431,12 +431,12 @@ class TestGridSealCrewOverhead:
         task = wrapped.wrap_task("bench_task", _mock_task, agent_role="benchmarker")
 
         # Warm up
-        for i in range(5):
+        for i in range(10):
             await task({"query": f"Warmup {i}"})
 
-        # Measure 100 calls
+        # Measure 200 calls (p99 at index 198, tolerates 2 outliers)
         times: list[float] = []
-        for i in range(100):
+        for i in range(200):
             start = time.perf_counter()
             await task({"query": f"Bench {i}"})
             elapsed_ms = (time.perf_counter() - start) * 1000

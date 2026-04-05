@@ -416,14 +416,14 @@ class TestGridSealOpenAIOverhead:
             )
 
             # Warm up
-            for i in range(5):
+            for i in range(10):
                 await wrapped.create_completion(
                     messages=[{"role": "user", "content": f"Warmup {i}"}],
                 )
 
-            # Measure 100 calls
+            # Measure 200 calls (p99 at index 198, tolerates 2 outliers)
             times: list[float] = []
-            for i in range(100):
+            for i in range(200):
                 start = time.perf_counter()
                 await wrapped.create_completion(
                     messages=[{"role": "user", "content": f"Bench {i}"}],
