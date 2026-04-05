@@ -29,3 +29,17 @@ export type {
 } from "./adapters/http.js";
 
 export { wrapHttp } from "./adapters/http.js";
+
+export type {
+  CapturedToolCall,
+  McpCaptureError,
+  McpContentBlock,
+  McpToolCallParams,
+  McpToolResult,
+  McpCallToolFn,
+  GridSealMcp,
+  GridSealMcpOptions,
+  InterceptCallOptions,
+} from "./mcp/interceptor.js";
+
+export { wrapMcpClient } from "./mcp/interceptor.js";
