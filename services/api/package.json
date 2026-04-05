@@ -45,6 +45,7 @@
     "zod": "^3.25.3"
   },
   "devDependencies": {
+    "@gridseal/sdk-node": "workspace:*",
     "@types/better-sqlite3": "^7.6.13",
     "@types/node": "^25.5.2",
     "@types/pg": "^8.20.0",
