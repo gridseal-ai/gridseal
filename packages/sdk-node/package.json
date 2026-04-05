@@ -44,14 +44,19 @@
     "@gridseal/core": "workspace:*"
   },
   "peerDependencies": {
+    "@anthropic-ai/sdk": ">=0.30.0",
     "openai": ">=4.0.0"
   },
   "peerDependenciesMeta": {
+    "@anthropic-ai/sdk": {
+      "optional": true
+    },
     "openai": {
       "optional": true
     }
   },
   "devDependencies": {
+    "@anthropic-ai/sdk": "^0.82.0",
     "@types/node": "^25.5.2",
     "@vitest/coverage-v8": "^4.1.2",
     "openai": "^4.85.4",
