@@ -5,7 +5,7 @@ from __future__ import annotations
 import uuid
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
-from typing import Any, Awaitable, Callable
+from typing import Any, Awaitable, Callable, Generic, TypeVar
 
 from gridseal.core.chain import append_entry
 from gridseal.core.hash import canonicalize, sha256
@@ -21,8 +21,12 @@ from gridseal.core.types import (
 )
 
 
+TInput = TypeVar("TInput")
+TOutput = TypeVar("TOutput")
+
+
 @dataclass(frozen=True, slots=True)
-class CapturedNodeResult[TOutput]:
+class CapturedNodeResult(Generic[TOutput]):
     """Result of a wrapped LangGraph node execution."""
 
     output: TOutput
@@ -55,7 +59,7 @@ class GridSealLangGraph:
     def __post_init__(self) -> None:
         self._chain = ChainState(chain_id=self.chain_id)
 
-    def wrap_node[TInput, TOutput](
+    def wrap_node(
         self,
         name: str,
         fn: Callable[[TInput], Awaitable[TOutput]],

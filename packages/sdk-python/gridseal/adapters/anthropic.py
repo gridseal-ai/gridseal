@@ -24,11 +24,9 @@ from gridseal.core.types import (
 try:
     from anthropic import AsyncAnthropic
     from anthropic.types import Message
-except ImportError as exc:
-    raise ImportError(
-        "The anthropic package is required for the Anthropic adapter. "
-        "Install it with: pip install gridseal-sdk[anthropic]"
-    ) from exc
+except ImportError:
+    AsyncAnthropic = None  # type: ignore[assignment,misc]
+    Message = None  # type: ignore[assignment,misc]
 
 
 @dataclass(frozen=True, slots=True)
@@ -197,6 +195,11 @@ def wrap_anthropic(
     Returns a GridSealAnthropic instance that records every message
     as a proof chain entry.
     """
+    if AsyncAnthropic is None:
+        raise ImportError(
+            "The anthropic package is required for the Anthropic adapter. "
+            "Install it with: pip install gridseal-sdk[anthropic]"
+        )
     return GridSealAnthropic(
         client=client,
         chain_id=chain_id,
