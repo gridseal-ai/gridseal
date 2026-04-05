@@ -8,6 +8,7 @@ import { createChainRoutes } from "./routes/chains.js";
 import { createCertificateRoutes } from "./routes/certificates.js";
 import { createProvenanceRoutes } from "./routes/provenance.js";
 import { createReportRoutes } from "./routes/reports.js";
+import { createTrustPageRoutes } from "./routes/trust-page.js";
 import { errorHandler } from "./middleware/error-handler.js";
 import { tenantAuth, apiKeyAuth } from "./middleware/auth.js";
 import type { StorageFactory } from "./storage-factory.js";
@@ -46,6 +47,7 @@ function mountRoutes(app: Hono, resolver: StorageResolver): void {
   app.route("/certificates", createCertificateRoutes(resolver));
   app.route("/provenance", createProvenanceRoutes(resolver));
   app.route("/reports", createReportRoutes(resolver));
+  app.route("/chains", createTrustPageRoutes(resolver));
 
   app.notFound((c) => {
     return c.json({ error: `Not found: ${c.req.method} ${c.req.path}` }, 404);
