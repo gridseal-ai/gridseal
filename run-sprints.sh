@@ -55,19 +55,62 @@ Work through these tasks in order, one per iteration:
 
 1. API service foundation. Create services/api/ using Hono framework on Node.js. Routes: POST /entries (append entry to chain), GET /entries (list with pagination, filter by date/model/actor/session), GET /entries/:id (single entry with full detail), GET /chain/verify (run chain validation, return integrity status), GET /reports/:regulation (generate compliance report for a regulation). Authentication via API key in Authorization header. Input validation with zod schemas. Connect to PostgreSQL via Drizzle ORM. Include database migration files. Full integration tests against a test database (use SQLite for test, Postgres adapter for production).
 
-2. Multi-tenant isolation. Each API key belongs to a tenant. Tenants can only access their own entries. Tenant ID is embedded in the API key (signed JWT). All queries filter by tenant_id. Test that tenant A cannot read tenant B entries.
+2. User management and organization model. Implement the full Org -> Project -> User hierarchy following this design:
 
-3. Dashboard frontend. Create services/dashboard/ using React 19, Vite, TailwindCSS (utility classes only). Pages: Audit Trail Explorer (table view with search, filter by date range, model, actor, session_id, pagination), Entry Detail (full 24-field view with reasoning certificate expandable panel), Chain Verification (one-click verify, shows integrity status with pass/fail per segment). Use fetch to call the API. No state management library, just React hooks. Responsive layout. No component library, build from scratch with Tailwind.
+DATABASE TABLES (via Drizzle ORM):
+- organizations: id, slug, display_name, created_at, updated_at
+- projects: id, org_id, slug, display_name, created_at, updated_at
+- users: id, email, password_hash (argon2), display_name, created_at
+- org_memberships: user_id, org_id, role (owner/admin/reviewer/member/viewer/none), created_at
+- project_memberships: user_id, project_id, role (same enum, nullable - null means inherit from org), created_at
+- api_keys: id, type (project/personal/org), hashed_key (argon2), key_prefix (first 8 chars for identification), org_id, project_id (null for org keys), user_id (null for project/org keys), permissions (read/write/admin), expires_at (mandatory for org keys), revoked_at, created_by_user_id, created_at
+- role_change_log: id, org_id, project_id, target_user_id, changed_by_user_id, old_role, new_role, timestamp (every role change is an immutable audit record)
 
-4. Decision tree visualization. When viewing a session (multi-agent workflow), render the agent delegation tree. Root node is the orchestrator entry. Child nodes are sub-agent entries linked via parent_entry_id. Each node shows: agent_role, authority_level, review_status, and a summary. Clicking a node expands to show full entry detail. Use SVG rendering, not a third-party graph library. The tree must handle 50+ nodes without performance issues.
+ROLES (6 levels, hierarchical):
+- Owner: full control (billing, delete org, manage all members, transfer ownership). Minimum 2 Owners per org enforced.
+- Admin: create projects, manage members (except Owners), create/revoke API keys, full project access.
+- Reviewer: read/write access + can approve/reject entries (maker-checker pattern for compliance). Cannot manage members or keys.
+- Member: read/write within assigned projects. Cannot approve entries.
+- Viewer: read-only access to assigned projects. Config UI hidden.
+- None: no default access. Must be granted per-project explicitly.
 
-5. Trust Page generator. Create services/trust-page/ that generates a static HTML page for each tenant showing: models in use (aggregated from entries), total entries and chain integrity status, human review rate (percentage of entries with review_status approved or rejected), compliance report availability (which regulations have been mapped), last verification timestamp. Served as a static page at /{tenant-slug}/trust. Styled with TailwindCSS. Must look professional without a design system. Clean typography, adequate whitespace, Celestir celestial color palette (midnight navy 0A1628, aurora blue 1B6B9A, stardust 4DA8DA).
+CRITICAL RULE: Project-level role can only RESTRICT, never exceed the org-level role. An org Member cannot become a project Admin.
 
-6. Embeddable trust badge. A small SVG badge that tenants embed on their website. Shows chain integrity status (verified/unverified) and links to their Trust Page. Served as an SVG endpoint: GET /badge/:tenant-slug.svg. Badge updates in real time based on latest chain verification.
+API KEY TYPES (3 scopes, distinct prefixes):
+- Project API Keys (prefix gs_proj_): tied to a project, not a user. Used by SDKs to write entries. Created by Admin+. Encodes org_id + project_id in signed JWT.
+- Personal Access Tokens (prefix gs_pat_): tied to a user. Inherits user permissions. For dashboard API, CLI usage. Created by the user themselves.
+- Organization API Keys (prefix gs_org_): admin-level for CI/automation. Must have mandatory expiration. Scope-limitable to specific projects.
 
-7. LangGraph adapter. Create packages/sdk-node/src/frameworks/langgraph.ts. Intercepts LangGraph node executions and tool calls. Automatically creates tree-structured Proof Chain entries with parent_entry_id linking. Each graph node execution becomes an entry. Each tool call within a node becomes a child entry. Integration test using a mock LangGraph workflow with 3 nodes and 2 tool calls.
+All API keys stored as argon2 hashes, shown to user only once at creation. Key creation, rotation, and revocation logged as audit entries in the role_change_log.
 
-8. End-to-end test. Playwright test that: calls the API to create 20 entries across 2 sessions, loads the dashboard, verifies the audit trail explorer shows all entries, clicks into a multi-agent session and verifies the decision tree renders correctly, runs chain verification and confirms pass, visits the Trust Page and verifies all sections render, checks the trust badge SVG returns valid SVG with correct status. This is the proof that Sprint 4 works as a complete product.
+API ROUTES:
+- POST /auth/signup (auto-creates default org + project, returns project API key ready to use)
+- POST /auth/login (returns session token)
+- GET/POST/DELETE /orgs/:orgId/members
+- GET/POST/DELETE /orgs/:orgId/projects/:projectId/members
+- GET/POST/DELETE /orgs/:orgId/api-keys
+- GET/POST/DELETE /orgs/:orgId/projects/:projectId/api-keys
+- POST /orgs/:orgId/members/:userId/role (with role_change_log entry)
+
+When a user is removed from an org, revoke ALL their keys and project memberships in one transaction.
+
+Provide actionable error messages when wrong key type is used: 'You provided a Personal Access Token but SDK operations require a Project API Key'.
+
+Full test coverage: role hierarchy enforcement, project role restriction rule, key type validation, org isolation, member removal cascade.
+
+3. Multi-tenant isolation with user-scoped access. Every DB query scoped by org_id. Within an org, queries further scoped by user role and project membership. Row-level checks: user can only access projects they have a role in. Test that: tenant A cannot read tenant B entries, a Viewer cannot write entries, a Member cannot approve entries, a Reviewer can approve but cannot manage members, an org Member with project-level None role cannot access that project. Test with 3 orgs, 5 users across different roles, verify complete isolation.
+
+4. Dashboard frontend. Create services/dashboard/ using React 19, Vite, TailwindCSS (utility classes only). Pages: Org selector (on login), Project selector, Audit Trail Explorer (table view with search, filter by date range, model, actor, session_id, pagination), Entry Detail (full 24-field view with reasoning certificate expandable panel), Chain Verification (one-click verify, shows integrity status with pass/fail per segment), Settings (org members, project members, API keys with role management UI). Use fetch to call the API. No state management library, just React hooks. Responsive layout. No component library, build from scratch with Tailwind. Role-based UI: hide admin controls from non-admins, hide write actions from Viewers, show approve/reject buttons only for Reviewers+.
+
+5. Decision tree visualization. When viewing a session (multi-agent workflow), render the agent delegation tree. Root node is the orchestrator entry. Child nodes are sub-agent entries linked via parent_entry_id. Each node shows: agent_role, authority_level, review_status, and a summary. Clicking a node expands to show full entry detail. Use SVG rendering, not a third-party graph library. The tree must handle 50+ nodes without performance issues.
+
+6. Trust Page generator. Create services/trust-page/ that generates a static HTML page for each tenant showing: models in use (aggregated from entries), total entries and chain integrity status, human review rate (percentage of entries with review_status approved or rejected), compliance report availability (which regulations have been mapped), last verification timestamp. Served as a static page at /{tenant-slug}/trust. Styled with TailwindCSS. Must look professional without a design system. Clean typography, adequate whitespace, Celestir celestial color palette (midnight navy 0A1628, aurora blue 1B6B9A, stardust 4DA8DA).
+
+7. Embeddable trust badge. A small SVG badge that tenants embed on their website. Shows chain integrity status (verified/unverified) and links to their Trust Page. Served as an SVG endpoint: GET /badge/:tenant-slug.svg. Badge updates in real time based on latest chain verification.
+
+8. LangGraph adapter. Create packages/sdk-node/src/frameworks/langgraph.ts. Intercepts LangGraph node executions and tool calls. Automatically creates tree-structured Proof Chain entries with parent_entry_id linking. Each graph node execution becomes an entry. Each tool call within a node becomes a child entry. Integration test using a mock LangGraph workflow with 3 nodes and 2 tool calls.
+
+9. End-to-end test. Playwright test that: signs up a user (auto-creates org + project), generates a project API key, calls the API to create 20 entries across 2 sessions, invites a second user as Viewer and verifies read-only access, invites a third user as Reviewer and verifies approve/reject workflow, loads the dashboard, verifies the audit trail explorer shows all entries, verifies role-based UI (Viewer sees no write controls, Reviewer sees approve button), clicks into a multi-agent session and verifies the decision tree renders correctly, runs chain verification and confirms pass, visits the Trust Page and verifies all sections render, checks the trust badge SVG returns valid SVG with correct status. This is the proof that Sprint 4 works as a complete product.
 
 Follow all code standards in CLAUDE.md. Services code needs 80%+ coverage. Frontend tests use Vitest for unit, Playwright for E2E. No component libraries, no shadcn, no material UI. Build clean UI with raw Tailwind. The dashboard must feel fast and professional, not like a prototype." \
   --max-duration 16h \
