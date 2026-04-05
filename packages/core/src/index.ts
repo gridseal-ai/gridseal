@@ -173,3 +173,26 @@ export {
   generateComplianceReport,
   exportReportAsJson,
 } from "./export/compliance-report.js";
+
+export type {
+  PolicyDecision,
+  RuleCategory,
+  ActionConditions,
+  ActionRule,
+  AuthorityPolicy,
+  ActionRequest,
+  EnforcementResult,
+} from "./compliance/authority/types.js";
+
+export {
+  POLICY_DECISIONS,
+  RULE_CATEGORIES,
+} from "./compliance/authority/types.js";
+
+export type { PolicyParseError } from "./compliance/authority/policy-parser.js";
+export { parsePolicy } from "./compliance/authority/policy-parser.js";
+
+export {
+  enforcePolicy,
+  enforcementToTags,
+} from "./compliance/authority/enforcement.js";
