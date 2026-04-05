@@ -36,13 +36,19 @@
   "dependencies": {
     "@gridseal/core": "workspace:*",
     "@hono/node-server": "^1.14.3",
+    "drizzle-orm": "^0.45.2",
     "hono": "^4.7.10",
+    "pg": "^8.20.0",
     "pino": "^9.7.0",
     "zod": "^3.25.3"
   },
   "devDependencies": {
+    "@types/better-sqlite3": "^7.6.13",
     "@types/node": "^25.5.2",
+    "@types/pg": "^8.20.0",
     "@vitest/coverage-v8": "^4.1.2",
+    "better-sqlite3": "^12.8.0",
+    "drizzle-kit": "^0.31.10",
     "tsup": "^8.5.1",
     "tsx": "^4.19.4",
     "typescript": "^6.0.2",
