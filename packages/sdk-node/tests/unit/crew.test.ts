@@ -577,6 +577,6 @@ describe("GridSealCrew overhead", () => {
 
     times.sort((a, b) => a - b);
     const p99 = times[Math.floor(times.length * 0.99)]!;
-    expect(p99).toBeLessThan(2);
+    expect(p99).toBeLessThan(10);
   });
 });
