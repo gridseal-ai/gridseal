@@ -215,6 +215,57 @@ Follow all code standards in CLAUDE.md. No mocks. No stubs. No skipped tests. No
 echo "=== SPRINT 4.6 COMPLETE: $(date) ===" >> "$LOG"
 
 ###############################################################################
+# CLEANUP: README revision
+###############################################################################
+echo "=== README REVISION STARTING: $(date) ===" >> "$LOG"
+
+continuous-claude \
+  --owner gridseal-ai --repo gridseal \
+  -p "Read CLAUDE.md. You are rewriting the README.md for GridSeal.
+
+The current README is a minimal placeholder. Rewrite it to be attractive, grounded, and concise. Follow these rules exactly:
+
+TONE: Professional, direct, confident. No hype. No buzzwords. No fluff. Write like an engineer explaining their work to a smart peer who has 2 minutes.
+
+CONTENT (in this order, keep the whole thing under 150 lines):
+1. One-liner: what GridSeal is (tamper-evident audit trail for AI systems)
+2. Why it matters (3-4 sentences max): AI systems make decisions that affect people. Regulations are arriving (EU AI Act, Colorado AI Act, NIST AI RMF, HIPAA). Organizations need proof of what their AI did, why, and whether a human reviewed it. GridSeal provides that proof as a cryptographically verifiable chain.
+3. Who uses it and why (brief, no bullet point walls):
+   - Government agencies deploying AI for public services (benefits, immigration, law enforcement) need audit trails for accountability and FOIA compliance
+   - Financial services using AI for lending, underwriting, fraud detection need records for fair lending laws and examiner reviews
+   - Healthcare organizations using AI for diagnostics or treatment recommendations need HIPAA audit controls
+   - Any company shipping AI products in the EU after August 2026 needs Article 12 record-keeping
+   - AI platform companies building multi-agent systems need provenance tracking across agent delegation chains
+4. What it does (short feature list, not a wall of text): hash-chained entries, reasoning certificates, compliance auto-tagging, AIBOM/model provenance, storage adapters, SDK wrappers for major AI providers, decision tree tracking for multi-agent workflows
+5. Quick install + minimal usage example (npm install, wrap an AI call, verify chain)
+6. License line (AGPL-3.0)
+
+DO NOT INCLUDE:
+- Emojis
+- Em dashes or en dashes (use regular dashes or commas)
+- Contributing section, code of conduct, acknowledgments
+- Badges (build status, coverage, etc.)
+- Table of contents
+- The word 'comprehensive', 'robust', 'seamless', 'leverage', 'utilize', 'facilitate'
+- Any reference to AI generation, Claude, or LLMs building this
+- Author names (use 'Gridseal by Celestir' if attribution is needed)
+
+PROCESS:
+Write the README three times. After each draft, review it critically:
+- Draft 1: Get the content right. Check facts against the actual codebase (read package.json, src/index.ts exports, etc.)
+- Draft 2: Cut every sentence that does not earn its place. Tighten language. Remove anything that sounds like marketing copy.
+- Draft 3: Final pass for tone. Read it as a skeptical senior engineer. Remove anything that would make them roll their eyes. Check for em dashes, flowery language, AI markers.
+
+Only commit the third draft." \
+  --max-duration 2h \
+  -m 0 \
+  --merge-strategy squash \
+  -r "Read the committed README.md. Check for: em dashes, en dashes, emojis, the words 'comprehensive', 'robust', 'seamless', 'leverage', 'utilize', 'facilitate'. Check that the install example actually works with the current package name. Check line count is under 150. Verify the tone is direct and grounded, not salesy." \
+  2>&1 | tee -a "$LOG"
+
+echo "=== README REVISION COMPLETE: $(date) ===" >> "$LOG"
+
+###############################################################################
 # CLEANUP: Remove AI markers (em dashes, etc.)
 ###############################################################################
 echo "=== AI MARKER CLEANUP STARTING: $(date) ===" >> "$LOG"
@@ -254,14 +305,39 @@ echo "=== AUTHOR REWRITE STARTING: $(date) ===" >> "$LOG"
 
 cd /Users/rohit/Documents/celestir-rd/gridseal
 
-git filter-branch -f --env-filter '
-export GIT_AUTHOR_NAME="Gridseal Team"
-export GIT_AUTHOR_EMAIL="gridseal@celestir.com"
-export GIT_COMMITTER_NAME="Gridseal Team"
-export GIT_COMMITTER_EMAIL="gridseal@celestir.com"
-' -- --all 2>&1 | tee -a "$LOG"
+# Remove run-sprints.sh from entire git history and rewrite author in one pass
+git filter-branch -f \
+  --env-filter '
+    export GIT_AUTHOR_NAME="Gridseal Team"
+    export GIT_AUTHOR_EMAIL="gridseal@celestir.com"
+    export GIT_COMMITTER_NAME="Gridseal Team"
+    export GIT_COMMITTER_EMAIL="gridseal@celestir.com"
+  ' \
+  --index-filter '
+    git rm --cached --ignore-unmatch run-sprints.sh
+  ' \
+  --prune-empty -- --all 2>&1 | tee -a "$LOG"
 
 git push --force origin main 2>&1 | tee -a "$LOG"
 
 echo "=== AUTHOR REWRITE COMPLETE: $(date) ===" >> "$LOG"
+
+###############################################################################
+# CLEANUP: Remove run-sprints.sh and other build artifacts from repo
+###############################################################################
+echo "=== FINAL CLEANUP STARTING: $(date) ===" >> "$LOG"
+
+cd /Users/rohit/Documents/celestir-rd/gridseal
+
+# Remove from git tracking but keep locally
+git rm --cached run-sprints.sh 2>/dev/null
+
+# Add to .gitignore so it stays local-only
+grep -qxF 'run-sprints.sh' .gitignore || echo "run-sprints.sh" >> .gitignore
+git add .gitignore
+
+git commit -m "chore: remove build script from tracking"
+git push origin main 2>&1 | tee -a "$LOG"
+
+echo "=== FINAL CLEANUP COMPLETE: $(date) ===" >> "$LOG"
 echo "=== ALL SPRINTS FINISHED: $(date) ===" >> "$LOG"
