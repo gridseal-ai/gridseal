@@ -557,16 +557,16 @@ describe("GridSealCrew overhead", () => {
     const fastTask = vi.fn().mockResolvedValue({ result: "ok" });
 
     // Warm up
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < 10; i++) {
       const task = wrapped.wrapTask(`warmup_${i}`, fastTask, {
         agentRole: `agent_${i}`,
       });
       await task({ step: i });
     }
 
-    // Measure
+    // Measure 200 calls (p99 at index 198, tolerates 2 outliers)
     const times: number[] = [];
-    for (let i = 0; i < 100; i++) {
+    for (let i = 0; i < 200; i++) {
       const task = wrapped.wrapTask(`bench_task_${i}`, fastTask, {
         agentRole: `bench_agent_${i}`,
       });
@@ -577,6 +577,6 @@ describe("GridSealCrew overhead", () => {
 
     times.sort((a, b) => a - b);
     const p99 = times[Math.floor(times.length * 0.99)]!;
-    expect(p99).toBeLessThan(10);
+    expect(p99).toBeLessThan(2);
   });
 });

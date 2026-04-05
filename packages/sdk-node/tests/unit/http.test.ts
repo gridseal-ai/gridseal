@@ -492,15 +492,15 @@ describe("GridSealHttp overhead", () => {
     });
 
     // Warm up
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < 10; i++) {
       await wrapped.call(callFn, {
         request: { prompt: `Warmup ${i}`, model: "m1", maxTokens: 50 },
       });
     }
 
-    // Measure: run 100 calls, record the overhead for each
+    // Measure 200 calls (p99 at index 198, tolerates 2 outliers)
     const times: number[] = [];
-    for (let i = 0; i < 100; i++) {
+    for (let i = 0; i < 200; i++) {
       const start = performance.now();
       await wrapped.call(callFn, {
         request: { prompt: `Bench ${i}`, model: "m1", maxTokens: 50 },
@@ -510,7 +510,7 @@ describe("GridSealHttp overhead", () => {
 
     times.sort((a, b) => a - b);
     const p99 = times[Math.floor(times.length * 0.99)]!;
-    expect(p99).toBeLessThan(10);
+    expect(p99).toBeLessThan(2);
   });
 });
 

@@ -552,15 +552,15 @@ describe("GridSealOpenAI overhead", () => {
     });
 
     // Warm up
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < 10; i++) {
       await wrapped.createCompletion({
         messages: [{ role: "user", content: `Warmup ${i}` }],
       });
     }
 
-    // Measure: run 100 calls, record the overhead for each
+    // Measure 200 calls (p99 at index 198, tolerates 2 outliers)
     const times: number[] = [];
-    for (let i = 0; i < 100; i++) {
+    for (let i = 0; i < 200; i++) {
       const start = performance.now();
       await wrapped.createCompletion({
         messages: [{ role: "user", content: `Bench ${i}` }],
@@ -570,6 +570,6 @@ describe("GridSealOpenAI overhead", () => {
 
     times.sort((a, b) => a - b);
     const p99 = times[Math.floor(times.length * 0.99)]!;
-    expect(p99).toBeLessThan(10);
+    expect(p99).toBeLessThan(2);
   });
 });

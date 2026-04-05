@@ -215,6 +215,56 @@ Follow all code standards in CLAUDE.md. No mocks. No stubs. No skipped tests. No
 echo "=== SPRINT 4.6 COMPLETE: $(date) ===" >> "$LOG"
 
 ###############################################################################
+# CLEANUP: Dashboard design polish — Celestir celestial + governance theme
+###############################################################################
+echo "=== DASHBOARD DESIGN POLISH STARTING: $(date) ===" >> "$LOG"
+
+continuous-claude \
+  --owner gridseal-ai --repo gridseal \
+  -p "Read CLAUDE.md. You are doing a design polish pass on the GridSeal dashboard, trust page, and any other frontend surfaces.
+
+The current dashboard is functional but needs a distinctive visual identity. Apply the Celestir celestial theme combined with a governance/provenance aesthetic. The vibe is: serious, reliable, unique, creative — not generic SaaS, not playful startup.
+
+DESIGN DIRECTION:
+- Color palette anchored on Celestir celestial colors: midnight navy (#0A1628), aurora blue (#1B6B9A), stardust (#4DA8DA), with accents of soft nebula purple (#7B5EA7) and verification green (#2ECC71). Dark mode by default.
+- Think: a control room for AI governance. Clean data density. Confidence-inspiring. Like Bloomberg Terminal meets a star map.
+- Typography: monospace for hashes, chain IDs, timestamps. Clean sans-serif (Inter or system font stack) for everything else. Good hierarchy — large bold headings, subtle secondary text.
+- Chain visualization should feel like constellation maps — entries as nodes, hash links as connecting lines, with a subtle glow on verified segments.
+- Status indicators: verified = calm green glow, unverified = amber pulse, tampered = red alert. No cartoon icons.
+- Tables should be dense but readable — alternating row tints using midnight navy shades, not stark white/gray stripes.
+- Cards and panels: subtle glass-morphism with very low opacity backgrounds, thin border in aurora blue. No heavy shadows.
+- The trust page should feel authoritative — like a certificate or official document. Clean whitespace, structured sections, subtle watermark-style grid pattern in the background.
+- Trust badge SVG: minimal, elegant. Think security seal, not cartoon badge.
+- Decision tree visualization: nodes as subtle rounded rectangles with role labels, edges as smooth curves, layout flows top-to-bottom. Approved nodes have a green left border, escalated have amber, rejected have red.
+
+IMPLEMENTATION RULES:
+- TailwindCSS utility classes only. No custom CSS files. No component libraries.
+- Extend the Tailwind config with the Celestir color palette as custom colors (celestir-navy, celestir-aurora, celestir-stardust, celestir-nebula, celestir-verify).
+- All colors must meet WCAG AA contrast ratios for accessibility.
+- Responsive: works on 1440p monitors (primary use case) and down to tablet.
+- No animations except subtle transitions on hover/focus states. No loading spinners that bounce or pulse — use a simple thin progress bar.
+- No stock photos, no illustrations, no emojis. The data IS the visual.
+
+Work through these areas one per iteration:
+1. Tailwind config + global styles (color palette, typography, dark mode setup)
+2. Layout and navigation components
+3. Audit trail explorer (table, filters, search)
+4. Entry detail page (24-field view, reasoning certificate panel)
+5. Chain verification page
+6. Decision tree visualization (SVG, constellation style)
+7. Trust page (authoritative document feel)
+8. Trust badge SVG (security seal aesthetic)
+
+Run pnpm build after each iteration. The dashboard must build and render without errors." \
+  --max-duration 8h \
+  -m 0 \
+  --merge-strategy squash \
+  -r "Run pnpm build across all services. Verify no build errors. Check that no custom CSS files exist — only Tailwind utility classes. Verify the Tailwind config includes the Celestir color palette. Check that all color usage references the custom palette, not hardcoded hex values in JSX. Verify WCAG AA contrast ratios for text on primary backgrounds." \
+  2>&1 | tee -a "$LOG"
+
+echo "=== DASHBOARD DESIGN POLISH COMPLETE: $(date) ===" >> "$LOG"
+
+###############################################################################
 # CLEANUP: Remove AI markers (em dashes, etc.)
 ###############################################################################
 echo "=== AI MARKER CLEANUP STARTING: $(date) ===" >> "$LOG"
