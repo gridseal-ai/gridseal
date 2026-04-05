@@ -54,3 +54,23 @@ export type {
 } from "./mcp/interceptor.js";
 
 export { wrapMcpClient } from "./mcp/interceptor.js";
+
+export type {
+  CapturedNodeResult,
+  LangGraphCaptureError,
+  GridSealLangGraph,
+  GridSealLangGraphOptions,
+  WrapNodeOptions,
+} from "./frameworks/langgraph.js";
+
+export { wrapLangGraph } from "./frameworks/langgraph.js";
+
+export type {
+  CapturedTaskResult,
+  CrewCaptureError,
+  GridSealCrew,
+  GridSealCrewOptions,
+  WrapTaskOptions,
+} from "./frameworks/crew.js";
+
+export { wrapCrew } from "./frameworks/crew.js";
