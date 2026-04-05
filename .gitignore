@@ -16,3 +16,5 @@ specs/
 agent-comms/
 reviews/
 SHARED_TASK_NOTES.md
+.docusaurus/
+build/
