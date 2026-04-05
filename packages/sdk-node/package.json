@@ -1,0 +1,62 @@
+{
+  "name": "@gridseal/sdk-node",
+  "version": "0.1.0",
+  "description": "Node.js SDK with provider adapters for GridSeal audit trails",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsup --tsconfig tsconfig.build.json",
+    "prepublishOnly": "pnpm run build",
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage",
+    "lint": "tsc --noEmit",
+    "clean": "rm -rf dist"
+  },
+  "keywords": [
+    "audit-trail",
+    "ai-governance",
+    "openai",
+    "anthropic",
+    "gridseal"
+  ],
+  "author": "Gridseal by Celestir",
+  "license": "AGPL-3.0-only",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/celestir/gridseal.git",
+    "directory": "packages/sdk-node"
+  },
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "sideEffects": false,
+  "files": [
+    "dist"
+  ],
+  "dependencies": {
+    "@gridseal/core": "workspace:*"
+  },
+  "peerDependencies": {
+    "openai": ">=4.0.0"
+  },
+  "peerDependenciesMeta": {
+    "openai": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@types/node": "^25.5.2",
+    "@vitest/coverage-v8": "^4.1.2",
+    "openai": "^4.85.4",
+    "tsup": "^8.5.1",
+    "typescript": "^6.0.2",
+    "vitest": "^4.1.2"
+  }
+}
