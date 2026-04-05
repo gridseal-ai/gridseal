@@ -10,7 +10,8 @@
     "test:regression": "pnpm -r run test:regression",
     "test:coverage": "pnpm -r run test:coverage",
     "lint": "pnpm -r run lint",
-    "clean": "pnpm -r run clean"
+    "clean": "pnpm -r run clean",
+    "test:e2e": "npx playwright test --config tests/e2e/playwright.config.ts"
   },
   "keywords": [],
   "author": "",
@@ -24,5 +25,8 @@
       "better-sqlite3",
       "esbuild"
     ]
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.59.1"
   }
 }
