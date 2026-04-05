@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Literal, Union
+from typing import Generic, Literal, TypeVar, Union
 
 EntryType = Literal[
     "ai_decision",
@@ -129,8 +129,12 @@ class ChainState:
 
 # Result type: discriminated union for fallible operations.
 
+T = TypeVar("T")
+E = TypeVar("E")
+
+
 @dataclass(frozen=True, slots=True)
-class Ok[T]:
+class Ok(Generic[T]):
     """Successful result."""
 
     value: T
@@ -138,22 +142,22 @@ class Ok[T]:
 
 
 @dataclass(frozen=True, slots=True)
-class Err[E]:
+class Err(Generic[E]):
     """Failed result."""
 
     error: E
     ok: bool = field(default=False, init=False)
 
 
-type Result[T, E] = Ok[T] | Err[E]
+Result = Union[Ok[T], Err[E]]
 
 
-def ok[T](value: T) -> Ok[T]:
+def ok(value: T) -> Ok[T]:
     """Create a successful result."""
     return Ok(value=value)
 
 
-def err[E](error: E) -> Err[E]:
+def err(error: E) -> Err[E]:
     """Create a failed result."""
     return Err(error=error)
 

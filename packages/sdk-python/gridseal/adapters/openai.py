@@ -24,11 +24,9 @@ from gridseal.core.types import (
 try:
     from openai import AsyncOpenAI
     from openai.types.chat import ChatCompletion
-except ImportError as exc:
-    raise ImportError(
-        "The openai package is required for the OpenAI adapter. "
-        "Install it with: pip install gridseal-sdk[openai]"
-    ) from exc
+except ImportError:
+    AsyncOpenAI = None  # type: ignore[assignment,misc]
+    ChatCompletion = None  # type: ignore[assignment,misc]
 
 
 @dataclass(frozen=True, slots=True)
@@ -194,6 +192,11 @@ def wrap_openai(
     Returns a GridSealOpenAI instance that records every chat completion
     as a proof chain entry.
     """
+    if AsyncOpenAI is None:
+        raise ImportError(
+            "The openai package is required for the OpenAI adapter. "
+            "Install it with: pip install gridseal-sdk[openai]"
+        )
     return GridSealOpenAI(
         client=client,
         chain_id=chain_id,
