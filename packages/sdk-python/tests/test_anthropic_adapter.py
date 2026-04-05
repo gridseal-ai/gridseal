@@ -539,3 +539,44 @@ class TestWrapAnthropic:
             )
             assert wrapped.session_id == "s1"
             assert wrapped.actor_id == "a1"
+
+
+class TestGridSealAnthropicOverhead:
+    """Verify SDK wrapper adds less than 2ms overhead per call."""
+
+    async def test_adds_less_than_2ms_overhead_per_call(self) -> None:
+        import time
+
+        storage = InMemoryAdapter()
+        mock_client = _make_mock_client()
+
+        with patch("gridseal.adapters.anthropic.AsyncAnthropic", new=type(mock_client)):
+            from gridseal.adapters.anthropic import wrap_anthropic
+
+            wrapped = wrap_anthropic(
+                mock_client,
+                chain_id="bench-chain",
+                storage=storage,
+            )
+
+            # Warm up
+            for i in range(5):
+                await wrapped.create_message(
+                    messages=[{"role": "user", "content": f"Warmup {i}"}],
+                    model="claude-sonnet-4-20250514",
+                )
+
+            # Measure 100 calls
+            times: list[float] = []
+            for i in range(100):
+                start = time.perf_counter()
+                await wrapped.create_message(
+                    messages=[{"role": "user", "content": f"Bench {i}"}],
+                    model="claude-sonnet-4-20250514",
+                )
+                elapsed_ms = (time.perf_counter() - start) * 1000
+                times.append(elapsed_ms)
+
+            times.sort()
+            p99 = times[int(len(times) * 0.99)]
+            assert p99 < 2, f"p99 overhead was {p99:.3f}ms, expected < 2ms"

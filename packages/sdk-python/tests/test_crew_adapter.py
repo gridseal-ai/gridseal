@@ -418,3 +418,30 @@ class TestWrapCrew:
             model_provider="my-crew",
         )
         assert wrapped.model_provider == "my-crew"
+
+
+class TestGridSealCrewOverhead:
+    """Verify SDK wrapper adds less than 2ms overhead per call."""
+
+    async def test_adds_less_than_2ms_overhead_per_call(self) -> None:
+        import time
+
+        storage = InMemoryAdapter()
+        wrapped = wrap_crew(chain_id="bench-chain", storage=storage)
+        task = wrapped.wrap_task("bench_task", _mock_task, agent_role="benchmarker")
+
+        # Warm up
+        for i in range(5):
+            await task({"query": f"Warmup {i}"})
+
+        # Measure 100 calls
+        times: list[float] = []
+        for i in range(100):
+            start = time.perf_counter()
+            await task({"query": f"Bench {i}"})
+            elapsed_ms = (time.perf_counter() - start) * 1000
+            times.append(elapsed_ms)
+
+        times.sort()
+        p99 = times[int(len(times) * 0.99)]
+        assert p99 < 2, f"p99 overhead was {p99:.3f}ms, expected < 2ms"
