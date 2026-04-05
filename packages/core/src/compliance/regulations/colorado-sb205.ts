@@ -80,9 +80,9 @@ const explanationOfDecision: RegulatoryRequirement = {
 };
 
 const appealProcess: RegulatoryRequirement = {
-  requirementId: `${REG_ID}-6-1-1703-4b-appeal`,
+  requirementId: `${REG_ID}-6-1-1703-4b-iii`,
   regulationId: REG_ID,
-  sectionRef: "Section 6-1-1703(4)(b)",
+  sectionRef: "Section 6-1-1703(4)(b)(III)",
   title: "Opportunity to appeal consequential decisions",
   description:
     "Deployers must provide consumers with an opportunity to appeal a consequential decision made by an AI system and to request human review of the decision.",
@@ -121,12 +121,12 @@ const riskManagementProgram: RegulatoryRequirement = {
 };
 
 const dataGovernance: RegulatoryRequirement = {
-  requirementId: `${REG_ID}-6-1-1703-3-data`,
+  requirementId: `${REG_ID}-6-1-1702-2c-ii`,
   regulationId: REG_ID,
-  sectionRef: "Section 6-1-1703(3)",
+  sectionRef: "Section 6-1-1702(2)(c)(II)",
   title: "Data governance for training and operation",
   description:
-    "Developers and deployers must maintain governance practices over the data used to train, test, and operate high-risk AI systems, including measures to detect and mitigate bias.",
+    "Developers of high-risk AI systems must maintain governance practices over the data used to train, test, and operate AI systems, including measures to detect and mitigate bias in training datasets.",
   applicableSectors: [],
   applicableDecisionTypes: [],
   applicableDataTypes: ["personal", "sensitive", "health", "biometric"],

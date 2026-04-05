@@ -89,10 +89,10 @@ describe("Colorado AI Act (SB 205)", () => {
     expect(coloradoSb205.jurisdiction).toContain("Colorado");
   });
 
-  it("defines 6 requirements covering Section 6-1-1703", () => {
+  it("defines 6 requirements covering deployer and developer duties", () => {
     expect(COLORADO_SB205_REQUIREMENTS).toHaveLength(6);
     for (const req of COLORADO_SB205_REQUIREMENTS) {
-      expect(req.sectionRef).toMatch(/Section 6-1-1703/);
+      expect(req.sectionRef).toMatch(/Section 6-1-170[23]/);
     }
   });
 
@@ -123,7 +123,7 @@ describe("Colorado AI Act (SB 205)", () => {
 
   it("appeal process targets autonomous decisions only", () => {
     const req = COLORADO_SB205_REQUIREMENTS.find(
-      (r) => r.requirementId === "colorado-sb205-6-1-1703-4b-appeal",
+      (r) => r.requirementId === "colorado-sb205-6-1-1703-4b-iii",
     );
     expect(req).toBeDefined();
     expect(req!.applicableAuthorityLevels).toEqual(["autonomous"]);
