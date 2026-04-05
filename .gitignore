@@ -5,6 +5,9 @@ dist/
 coverage/
 *.log
 .DS_Store
+.venv/
+.pytest_cache/
+__pycache__/
 CLAUDE.md
 CLAUDE_MD_FOR_GRIDSEAL.md
 GridSeal_Product_Design_Manual_v3_1_FINAL.docx
