@@ -10,6 +10,7 @@
     "dev": "tsx watch src/index.ts",
     "test": "vitest run",
     "test:integration": "vitest run --config vitest.integration.config.ts",
+    "test:uat": "vitest run --config vitest.uat.config.ts",
     "test:coverage": "vitest run --coverage",
     "lint": "tsc --noEmit",
     "clean": "rm -rf dist"
