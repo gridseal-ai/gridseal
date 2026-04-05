@@ -11,6 +11,7 @@ import {
 import type { AppendEntryInput } from "@gridseal/core";
 import { appendEntrySchema, entryListSchema } from "../validation/schemas.js";
 import { parseBody, parseQuery } from "../middleware/validate.js";
+import type { StorageResolver } from "../app.js";
 
 /** Build a ChainState from storage for validation and chain operations. */
 async function loadChainState(storage: StorageAdapter, chainId: string) {
@@ -18,11 +19,12 @@ async function loadChainState(storage: StorageAdapter, chainId: string) {
   return { chainId, entries: [...entries] };
 }
 
-export function createChainRoutes(storage: StorageAdapter): Hono {
+export function createChainRoutes(resolveStorage: StorageResolver): Hono {
   const app = new Hono();
 
   /** List all chain IDs with their entry counts. */
   app.get("/", async (c) => {
+    const storage = resolveStorage(c);
     const chainIds = await storage.listChainIds();
     const chains = await Promise.all(
       chainIds.map(async (chainId) => {
@@ -35,6 +37,7 @@ export function createChainRoutes(storage: StorageAdapter): Hono {
 
   /** Get chain metadata including entry count. */
   app.get("/:chainId", async (c) => {
+    const storage = resolveStorage(c);
     const chainId = c.req.param("chainId");
     const length = await storage.getChainLength(chainId);
     if (length === 0) {
@@ -45,6 +48,7 @@ export function createChainRoutes(storage: StorageAdapter): Hono {
 
   /** Get paginated entries for a chain with optional filters. */
   app.get("/:chainId/entries", async (c) => {
+    const storage = resolveStorage(c);
     const chainId = c.req.param("chainId");
     const parsed = parseQuery(c, entryListSchema);
     if (!parsed.ok) {
@@ -95,6 +99,7 @@ export function createChainRoutes(storage: StorageAdapter): Hono {
 
   /** Get a single entry by ID within a chain. */
   app.get("/:chainId/entries/:entryId", async (c) => {
+    const storage = resolveStorage(c);
     const chainId = c.req.param("chainId");
     const entryId = c.req.param("entryId");
     const result = await storage.getEntry(entryId);
@@ -109,6 +114,7 @@ export function createChainRoutes(storage: StorageAdapter): Hono {
 
   /** Append an entry to a chain. Creates the chain if it does not exist. */
   app.post("/:chainId/entries", async (c) => {
+    const storage = resolveStorage(c);
     const chainId = c.req.param("chainId");
     const parsed = await parseBody(c, appendEntrySchema);
     if (!parsed.ok) {
@@ -120,62 +126,12 @@ export function createChainRoutes(storage: StorageAdapter): Hono {
     const chain =
       chainState.entries.length > 0 ? chainState : createChain(chainId);
 
-    const input: AppendEntryInput = {
-      entryId: body.entryId,
-      timestamp: body.timestamp,
-      entryType: body.entryType,
-    };
-
-    if (body.parentEntryId !== undefined) {
-      (input as Record<string, unknown>)["parentEntryId"] = body.parentEntryId;
-    }
-    if (body.modelId !== undefined) {
-      (input as Record<string, unknown>)["modelId"] = body.modelId;
-    }
-    if (body.modelProvider !== undefined) {
-      (input as Record<string, unknown>)["modelProvider"] = body.modelProvider;
-    }
-    if (body.inputHash !== undefined) {
-      (input as Record<string, unknown>)["inputHash"] = body.inputHash;
-    }
-    if (body.outputHash !== undefined) {
-      (input as Record<string, unknown>)["outputHash"] = body.outputHash;
-    }
-    if (body.inputTokenCount !== undefined) {
-      (input as Record<string, unknown>)["inputTokenCount"] = body.inputTokenCount;
-    }
-    if (body.outputTokenCount !== undefined) {
-      (input as Record<string, unknown>)["outputTokenCount"] = body.outputTokenCount;
-    }
-    if (body.decisionType !== undefined) {
-      (input as Record<string, unknown>)["decisionType"] = body.decisionType;
-    }
-    if (body.confidenceScore !== undefined) {
-      (input as Record<string, unknown>)["confidenceScore"] = body.confidenceScore;
-    }
-    if (body.reasoningCertificateId !== undefined) {
-      (input as Record<string, unknown>)["reasoningCertificateId"] = body.reasoningCertificateId;
-    }
-    if (body.provenanceId !== undefined) {
-      (input as Record<string, unknown>)["provenanceId"] = body.provenanceId;
-    }
-    if (body.sessionId !== undefined) {
-      (input as Record<string, unknown>)["sessionId"] = body.sessionId;
-    }
-    if (body.actorId !== undefined) {
-      (input as Record<string, unknown>)["actorId"] = body.actorId;
-    }
-    if (body.policyIds !== undefined) {
-      (input as Record<string, unknown>)["policyIds"] = body.policyIds;
-    }
-    if (body.tags !== undefined) {
-      (input as Record<string, unknown>)["tags"] = body.tags;
-    }
-    if (body.annotation !== undefined) {
-      (input as Record<string, unknown>)["annotation"] = body.annotation;
-    }
-    if (body.complianceMetadata !== undefined) {
-      (input as Record<string, unknown>)["complianceMetadata"] = body.complianceMetadata;
+    const { entryId, timestamp, entryType, ...optional } = body;
+    const input: AppendEntryInput = { entryId, timestamp, entryType };
+    for (const [key, value] of Object.entries(optional)) {
+      if (value !== undefined) {
+        (input as Record<string, unknown>)[key] = value;
+      }
     }
 
     const appendResult = appendEntry(chain, input);
@@ -199,6 +155,7 @@ export function createChainRoutes(storage: StorageAdapter): Hono {
 
   /** Validate the entire chain. */
   app.post("/:chainId/validate", async (c) => {
+    const storage = resolveStorage(c);
     const chainId = c.req.param("chainId");
     const chainState = await loadChainState(storage, chainId);
     if (chainState.entries.length === 0) {
@@ -222,6 +179,7 @@ export function createChainRoutes(storage: StorageAdapter): Hono {
 
   /** Get children of a specific entry. */
   app.get("/:chainId/entries/:entryId/children", async (c) => {
+    const storage = resolveStorage(c);
     const entryId = c.req.param("entryId");
     const children = await storage.getEntriesByParentId(entryId);
     return c.json({ parentEntryId: entryId, children });
@@ -229,6 +187,7 @@ export function createChainRoutes(storage: StorageAdapter): Hono {
 
   /** Get subtree rooted at a specific entry. */
   app.get("/:chainId/entries/:entryId/subtree", async (c) => {
+    const storage = resolveStorage(c);
     const chainId = c.req.param("chainId");
     const entryId = c.req.param("entryId");
     const chainState = await loadChainState(storage, chainId);
@@ -247,6 +206,7 @@ export function createChainRoutes(storage: StorageAdapter): Hono {
 
   /** Validate a single entry's hash integrity. */
   app.post("/:chainId/entries/:entryId/validate", async (c) => {
+    const storage = resolveStorage(c);
     const entryId = c.req.param("entryId");
     const entryResult = await storage.getEntry(entryId);
     if (!entryResult.ok) {
@@ -268,6 +228,7 @@ export function createChainRoutes(storage: StorageAdapter): Hono {
 
   /** Validate a subtree. */
   app.post("/:chainId/subtree/:entryId/validate", async (c) => {
+    const storage = resolveStorage(c);
     const chainId = c.req.param("chainId");
     const entryId = c.req.param("entryId");
     const chainState = await loadChainState(storage, chainId);

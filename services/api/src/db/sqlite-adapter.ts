@@ -1,6 +1,7 @@
 /**
  * SQLite-backed StorageAdapter using Drizzle ORM.
- * Used for tests and local development.
+ * Used for tests and local development (single-tenant / legacy mode).
+ * For multi-tenant usage, see tenant-sqlite-adapter.ts.
  */
 
 import { drizzle } from "drizzle-orm/better-sqlite3";
@@ -8,119 +9,13 @@ import { eq, and, gte, lte, sql } from "drizzle-orm";
 import Database from "better-sqlite3";
 import type { StorageAdapter } from "@gridseal/core";
 import { ok, err } from "@gridseal/core";
-import type { ProofChainEntry, ReasoningCertificate, ModelProvenance } from "@gridseal/core";
+import type { ReasoningCertificate, ModelProvenance } from "@gridseal/core";
 import { sqliteEntries, sqliteCertificates, sqliteProvenance } from "./schema.js";
+import { entryToRow, rowToEntry } from "./row-helpers.js";
+import { CREATE_TABLES_SQL } from "./sqlite-schema-sql.js";
+import { DEFAULT_TENANT_ID } from "../storage-factory.js";
 
 type SqliteDb = ReturnType<typeof drizzle>;
-
-function entryToRow(entry: ProofChainEntry) {
-  return {
-    entryId: entry.entryId,
-    chainId: entry.chainId,
-    sequenceNumber: entry.sequenceNumber,
-    timestamp: entry.timestamp,
-    entryType: entry.entryType,
-    previousHash: entry.previousHash,
-    entryHash: entry.entryHash,
-    parentEntryId: entry.parentEntryId,
-    modelId: entry.modelId,
-    modelProvider: entry.modelProvider,
-    inputHash: entry.inputHash,
-    outputHash: entry.outputHash,
-    inputTokenCount: entry.inputTokenCount,
-    outputTokenCount: entry.outputTokenCount,
-    decisionType: entry.decisionType,
-    confidenceScore: entry.confidenceScore,
-    reasoningCertificateId: entry.reasoningCertificateId,
-    provenanceId: entry.provenanceId,
-    sessionId: entry.sessionId,
-    actorId: entry.actorId,
-    policyIds: JSON.stringify(entry.policyIds),
-    tags: JSON.stringify(entry.tags),
-    annotation: entry.annotation,
-    complianceMetadata: JSON.stringify(entry.complianceMetadata),
-  };
-}
-
-function rowToEntry(row: Record<string, unknown>): ProofChainEntry {
-  return {
-    entryId: row["entryId"] as string,
-    chainId: row["chainId"] as string,
-    sequenceNumber: row["sequenceNumber"] as number,
-    timestamp: row["timestamp"] as string,
-    entryType: row["entryType"] as ProofChainEntry["entryType"],
-    previousHash: (row["previousHash"] as string | null) ?? null,
-    entryHash: row["entryHash"] as string,
-    parentEntryId: (row["parentEntryId"] as string | null) ?? null,
-    modelId: (row["modelId"] as string | null) ?? null,
-    modelProvider: (row["modelProvider"] as string | null) ?? null,
-    inputHash: (row["inputHash"] as string | null) ?? null,
-    outputHash: (row["outputHash"] as string | null) ?? null,
-    inputTokenCount: (row["inputTokenCount"] as number | null) ?? null,
-    outputTokenCount: (row["outputTokenCount"] as number | null) ?? null,
-    decisionType: (row["decisionType"] as ProofChainEntry["decisionType"]) ?? null,
-    confidenceScore: (row["confidenceScore"] as number | null) ?? null,
-    reasoningCertificateId: (row["reasoningCertificateId"] as string | null) ?? null,
-    provenanceId: (row["provenanceId"] as string | null) ?? null,
-    sessionId: (row["sessionId"] as string | null) ?? null,
-    actorId: (row["actorId"] as string | null) ?? null,
-    policyIds: JSON.parse((row["policyIds"] as string) ?? "[]") as ReadonlyArray<string>,
-    tags: JSON.parse((row["tags"] as string) ?? "{}") as Readonly<Record<string, string>>,
-    annotation: (row["annotation"] as string | null) ?? null,
-    complianceMetadata: JSON.parse((row["complianceMetadata"] as string) ?? "{}") as Readonly<Record<string, unknown>>,
-  };
-}
-
-const CREATE_TABLES_SQL = `
-  CREATE TABLE IF NOT EXISTS entries (
-    entry_id TEXT PRIMARY KEY,
-    chain_id TEXT NOT NULL,
-    sequence_number INTEGER NOT NULL,
-    timestamp TEXT NOT NULL,
-    entry_type TEXT NOT NULL,
-    previous_hash TEXT,
-    entry_hash TEXT NOT NULL,
-    parent_entry_id TEXT,
-    model_id TEXT,
-    model_provider TEXT,
-    input_hash TEXT,
-    output_hash TEXT,
-    input_token_count INTEGER,
-    output_token_count INTEGER,
-    decision_type TEXT,
-    confidence_score REAL,
-    reasoning_certificate_id TEXT,
-    provenance_id TEXT,
-    session_id TEXT,
-    actor_id TEXT,
-    policy_ids TEXT,
-    tags TEXT,
-    annotation TEXT,
-    compliance_metadata TEXT
-  );
-
-  CREATE INDEX IF NOT EXISTS idx_entries_chain_id ON entries(chain_id, sequence_number);
-  CREATE INDEX IF NOT EXISTS idx_entries_parent_id ON entries(parent_entry_id);
-
-  CREATE TABLE IF NOT EXISTS certificates (
-    certificate_id TEXT PRIMARY KEY,
-    timestamp TEXT NOT NULL,
-    model_id TEXT NOT NULL,
-    model_provider TEXT NOT NULL,
-    certificate_hash TEXT NOT NULL,
-    data TEXT NOT NULL
-  );
-
-  CREATE TABLE IF NOT EXISTS provenance (
-    provenance_id TEXT PRIMARY KEY,
-    timestamp TEXT NOT NULL,
-    model_name TEXT NOT NULL,
-    model_version TEXT NOT NULL,
-    model_provider TEXT NOT NULL,
-    provenance_hash TEXT NOT NULL,
-    data TEXT NOT NULL
-  );
-`;
 
 export type SqliteAdapterHandle = {
   readonly adapter: StorageAdapter;
@@ -141,7 +36,7 @@ export function createSqliteAdapter(dbPath?: string | undefined): SqliteAdapterH
       if (existing) {
         return err({ type: "DUPLICATE_ENTRY" as const, entryId: entry.entryId });
       }
-      db.insert(sqliteEntries).values(entryToRow(entry)).run();
+      db.insert(sqliteEntries).values(entryToRow(entry, DEFAULT_TENANT_ID)).run();
       return ok(entry);
     },
 
@@ -196,6 +91,7 @@ export function createSqliteAdapter(dbPath?: string | undefined): SqliteAdapterH
       }
       db.insert(sqliteCertificates).values({
         certificateId: certificate.certificateId,
+        tenantId: DEFAULT_TENANT_ID,
         timestamp: certificate.timestamp,
         modelId: certificate.modelId,
         modelProvider: certificate.modelProvider,
@@ -220,6 +116,7 @@ export function createSqliteAdapter(dbPath?: string | undefined): SqliteAdapterH
       }
       db.insert(sqliteProvenance).values({
         provenanceId: provenance.provenanceId,
+        tenantId: DEFAULT_TENANT_ID,
         timestamp: provenance.timestamp,
         modelName: provenance.modelName,
         modelVersion: provenance.modelVersion,

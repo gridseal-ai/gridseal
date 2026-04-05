@@ -1,14 +1,15 @@
 import { Hono } from "hono";
-import type { StorageAdapter } from "@gridseal/core";
 import { createCertificate, verifyCertificate } from "@gridseal/core";
 import { createCertificateSchema } from "../validation/schemas.js";
 import { parseBody } from "../middleware/validate.js";
+import type { StorageResolver } from "../app.js";
 
-export function createCertificateRoutes(storage: StorageAdapter): Hono {
+export function createCertificateRoutes(resolveStorage: StorageResolver): Hono {
   const app = new Hono();
 
   /** Create a reasoning certificate. */
   app.post("/", async (c) => {
+    const storage = resolveStorage(c);
     const parsed = await parseBody(c, createCertificateSchema);
     if (!parsed.ok) {
       return parsed.response;
@@ -29,6 +30,7 @@ export function createCertificateRoutes(storage: StorageAdapter): Hono {
 
   /** Get a reasoning certificate by ID. */
   app.get("/:certificateId", async (c) => {
+    const storage = resolveStorage(c);
     const certificateId = c.req.param("certificateId");
     const result = await storage.getCertificate(certificateId);
     if (!result.ok) {
@@ -42,6 +44,7 @@ export function createCertificateRoutes(storage: StorageAdapter): Hono {
 
   /** Verify a certificate's hash integrity. */
   app.post("/:certificateId/verify", async (c) => {
+    const storage = resolveStorage(c);
     const certificateId = c.req.param("certificateId");
     const result = await storage.getCertificate(certificateId);
     if (!result.ok) {
