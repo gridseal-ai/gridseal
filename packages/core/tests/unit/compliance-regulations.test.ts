@@ -103,7 +103,7 @@ describe("Colorado AI Act (SB 205)", () => {
 
   it("impact assessment requires provenance and high risk", () => {
     const req = COLORADO_SB205_REQUIREMENTS.find(
-      (r) => r.requirementId === "colorado-sb205-6-1-1703-a",
+      (r) => r.requirementId === "colorado-sb205-6-1-1703-3",
     );
     expect(req).toBeDefined();
     expect(req!.minimumRiskLevel).toBe("high");
@@ -113,7 +113,7 @@ describe("Colorado AI Act (SB 205)", () => {
 
   it("explanation of decision requires reasoning certificate", () => {
     const req = COLORADO_SB205_REQUIREMENTS.find(
-      (r) => r.requirementId === "colorado-sb205-6-1-1703-c",
+      (r) => r.requirementId === "colorado-sb205-6-1-1703-4b",
     );
     expect(req).toBeDefined();
     expect(req!.requiresReasoningCertificate).toBe(true);
@@ -123,7 +123,7 @@ describe("Colorado AI Act (SB 205)", () => {
 
   it("appeal process targets autonomous decisions only", () => {
     const req = COLORADO_SB205_REQUIREMENTS.find(
-      (r) => r.requirementId === "colorado-sb205-6-1-1703-d",
+      (r) => r.requirementId === "colorado-sb205-6-1-1703-4b-appeal",
     );
     expect(req).toBeDefined();
     expect(req!.applicableAuthorityLevels).toEqual(["autonomous"]);
