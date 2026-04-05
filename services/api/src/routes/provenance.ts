@@ -1,14 +1,15 @@
 import { Hono } from "hono";
-import type { StorageAdapter } from "@gridseal/core";
 import { createProvenance, verifyProvenance } from "@gridseal/core";
 import { createProvenanceSchema } from "../validation/schemas.js";
 import { parseBody } from "../middleware/validate.js";
+import type { StorageResolver } from "../app.js";
 
-export function createProvenanceRoutes(storage: StorageAdapter): Hono {
+export function createProvenanceRoutes(resolveStorage: StorageResolver): Hono {
   const app = new Hono();
 
   /** Create a model provenance record. */
   app.post("/", async (c) => {
+    const storage = resolveStorage(c);
     const parsed = await parseBody(c, createProvenanceSchema);
     if (!parsed.ok) {
       return parsed.response;
@@ -29,6 +30,7 @@ export function createProvenanceRoutes(storage: StorageAdapter): Hono {
 
   /** Get a model provenance record by ID. */
   app.get("/:provenanceId", async (c) => {
+    const storage = resolveStorage(c);
     const provenanceId = c.req.param("provenanceId");
     const result = await storage.getProvenance(provenanceId);
     if (!result.ok) {
@@ -42,6 +44,7 @@ export function createProvenanceRoutes(storage: StorageAdapter): Hono {
 
   /** Verify a provenance record's hash integrity. */
   app.post("/:provenanceId/verify", async (c) => {
+    const storage = resolveStorage(c);
     const provenanceId = c.req.param("provenanceId");
     const result = await storage.getProvenance(provenanceId);
     if (!result.ok) {

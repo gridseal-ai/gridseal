@@ -1,6 +1,7 @@
 /**
  * PostgreSQL-backed StorageAdapter using Drizzle ORM.
- * Used for production deployments.
+ * Used for production deployments (single-tenant / legacy mode).
+ * For multi-tenant, the tenant-scoped variant should be built similarly.
  */
 
 import { drizzle } from "drizzle-orm/node-postgres";
@@ -10,6 +11,7 @@ import type { StorageAdapter } from "@gridseal/core";
 import { ok, err } from "@gridseal/core";
 import type { ProofChainEntry, ReasoningCertificate, ModelProvenance } from "@gridseal/core";
 import { pgEntries, pgCertificates, pgProvenance } from "./schema.js";
+import { DEFAULT_TENANT_ID } from "../storage-factory.js";
 
 type PgDb = ReturnType<typeof drizzle>;
 
@@ -17,6 +19,7 @@ function entryToRow(entry: ProofChainEntry) {
   return {
     entryId: entry.entryId,
     chainId: entry.chainId,
+    tenantId: DEFAULT_TENANT_ID,
     sequenceNumber: entry.sequenceNumber,
     timestamp: entry.timestamp,
     entryType: entry.entryType,
@@ -86,6 +89,7 @@ export async function createPostgresAdapter(connectionString: string): Promise<P
     CREATE TABLE IF NOT EXISTS entries (
       entry_id VARCHAR(64) PRIMARY KEY,
       chain_id VARCHAR(128) NOT NULL,
+      tenant_id VARCHAR(128) NOT NULL DEFAULT '__default__',
       sequence_number INTEGER NOT NULL,
       timestamp VARCHAR(64) NOT NULL,
       entry_type VARCHAR(64) NOT NULL,
@@ -112,9 +116,12 @@ export async function createPostgresAdapter(connectionString: string): Promise<P
 
     CREATE INDEX IF NOT EXISTS idx_entries_chain_id ON entries(chain_id, sequence_number);
     CREATE INDEX IF NOT EXISTS idx_entries_parent_id ON entries(parent_entry_id);
+    CREATE INDEX IF NOT EXISTS idx_entries_tenant_id ON entries(tenant_id);
+    CREATE INDEX IF NOT EXISTS idx_entries_tenant_chain ON entries(tenant_id, chain_id);
 
     CREATE TABLE IF NOT EXISTS certificates (
       certificate_id VARCHAR(64) PRIMARY KEY,
+      tenant_id VARCHAR(128) NOT NULL DEFAULT '__default__',
       timestamp VARCHAR(64) NOT NULL,
       model_id VARCHAR(256) NOT NULL,
       model_provider VARCHAR(128) NOT NULL,
@@ -122,8 +129,11 @@ export async function createPostgresAdapter(connectionString: string): Promise<P
       data JSONB NOT NULL
     );
 
+    CREATE INDEX IF NOT EXISTS idx_certificates_tenant_id ON certificates(tenant_id);
+
     CREATE TABLE IF NOT EXISTS provenance (
       provenance_id VARCHAR(64) PRIMARY KEY,
+      tenant_id VARCHAR(128) NOT NULL DEFAULT '__default__',
       timestamp VARCHAR(64) NOT NULL,
       model_name VARCHAR(256) NOT NULL,
       model_version VARCHAR(128) NOT NULL,
@@ -131,6 +141,8 @@ export async function createPostgresAdapter(connectionString: string): Promise<P
       provenance_hash VARCHAR(64) NOT NULL,
       data JSONB NOT NULL
     );
+
+    CREATE INDEX IF NOT EXISTS idx_provenance_tenant_id ON provenance(tenant_id);
   `);
 
   const adapter: StorageAdapter = {
@@ -191,6 +203,7 @@ export async function createPostgresAdapter(connectionString: string): Promise<P
       }
       await db.insert(pgCertificates).values({
         certificateId: certificate.certificateId,
+        tenantId: DEFAULT_TENANT_ID,
         timestamp: certificate.timestamp,
         modelId: certificate.modelId,
         modelProvider: certificate.modelProvider,
@@ -215,6 +228,7 @@ export async function createPostgresAdapter(connectionString: string): Promise<P
       }
       await db.insert(pgProvenance).values({
         provenanceId: provenance.provenanceId,
+        tenantId: DEFAULT_TENANT_ID,
         timestamp: provenance.timestamp,
         modelName: provenance.modelName,
         modelVersion: provenance.modelVersion,

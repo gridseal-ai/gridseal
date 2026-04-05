@@ -1,5 +1,4 @@
 import { Hono } from "hono";
-import type { StorageAdapter } from "@gridseal/core";
 import {
   generateComplianceReport,
   getRegulationById,
@@ -8,6 +7,7 @@ import {
 import type { EntryMetadata } from "@gridseal/core";
 import { reportQuerySchema } from "../validation/schemas.js";
 import { parseQuery } from "../middleware/validate.js";
+import type { StorageResolver } from "../app.js";
 import crypto from "node:crypto";
 
 /** Default metadata applied when no overrides are provided. */
@@ -18,7 +18,7 @@ const DEFAULT_METADATA: EntryMetadata = {
   riskLevel: null,
 };
 
-export function createReportRoutes(storage: StorageAdapter): Hono {
+export function createReportRoutes(resolveStorage: StorageResolver): Hono {
   const app = new Hono();
 
   /** List available regulation IDs. */
@@ -29,6 +29,7 @@ export function createReportRoutes(storage: StorageAdapter): Hono {
 
   /** Generate a compliance report for a specific regulation. */
   app.get("/:regulation", async (c) => {
+    const storage = resolveStorage(c);
     const regulation = c.req.param("regulation");
 
     const reg = getRegulationById(regulation);
