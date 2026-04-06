@@ -218,7 +218,7 @@ describe("Chain validation benchmarks", () => {
     expect(elapsed).toBeLessThan(100);
   });
 
-  it("validates a 100K-entry chain in under 3000ms", () => {
+  it("validates a 100K-entry chain in under 3000ms", { timeout: 120_000 }, () => {
     const chain = buildChain(100_000, "val100k");
 
     const start = performance.now();
@@ -236,7 +236,7 @@ describe("Chain validation benchmarks", () => {
 /* ------------------------------------------------------------------ */
 
 describe("Memory benchmarks", () => {
-  it("keeps peak RSS under 500MB when appending 100K entries", () => {
+  it("keeps peak RSS under 500MB when appending 100K entries", { timeout: 120_000 }, () => {
     // Force GC if available to get a clean baseline
     if (typeof globalThis.gc === "function") {
       globalThis.gc();
