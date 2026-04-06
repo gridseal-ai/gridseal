@@ -1,23 +1,34 @@
 # GridSeal Test Results Summary
 
-Generated: 2026-04-05
+Generated: 2026-04-06 (verified run)
 
 ## Test Count by Package
 
 | Package | Test Files | Tests | Status |
 |---------|-----------|-------|--------|
 | @gridseal/core (unit) | 32 | 703 | All passing |
-| @gridseal/core (integration) | 1 | ~10 | All passing |
-| @gridseal/core (regression) | 1 | ~25 | All passing |
+| @gridseal/core (integration) | 1 | 73 | All passing |
+| @gridseal/core (regression) | 1 | 109 | All passing |
 | @gridseal/core (performance) | 1 | 16 | All passing |
-| @gridseal/api (unit) | 23 | 322 | All passing |
-| @gridseal/api (UAT) | 3 | ~104 | All passing |
+| @gridseal/api (unit + UAT) | 23 | 322 | All passing |
+| @gridseal/api (integration) | 7 | 102 | All passing |
 | @gridseal/api (performance) | 1 | 5 | All passing |
 | @gridseal/sdk-node | 7 | 168 | All passing |
-| @gridseal/cli | 6 | 49 | All passing |
+| @gridseal/cli (unit) | 5 | 49 | All passing |
+| @gridseal/cli (integration) | 1 | 9 | All passing |
 | @gridseal/dashboard | 12 | 68 | All passing |
 | @gridseal/trust-page | 4 | 75 | All passing |
-| **Total** | **~91** | **~1545+** | **All passing** |
+| **Total** | **77** | **1,699** | **All passing** |
+
+## Coverage
+
+### services/api
+| Metric | Coverage |
+|--------|----------|
+| Statements | 91.38% |
+| Branches | 82.53% |
+| Functions | 87.50% |
+| Lines | 91.44% |
 
 ## Test Layers Completed
 
