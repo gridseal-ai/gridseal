@@ -1,6 +1,6 @@
 /**
  * Minimal JWT implementation using Node.js crypto (HMAC-SHA256).
- * No third-party JWT libraries — compliant with GridSeal crypto rules.
+ * No third-party JWT libraries - compliant with GridSeal crypto rules.
  */
 
 import crypto from "node:crypto";

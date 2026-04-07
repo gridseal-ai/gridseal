@@ -31,22 +31,31 @@ export function SessionTreePage() {
   }, []);
 
   return (
-    <div className="space-y-6">
-      <div>
+    <div className="space-y-6 animate-fade-in">
+      <div className="flex items-center gap-3">
         <Link
           to="/chains"
-          className="text-xs text-slate-500 hover:text-slate-300 transition-colors"
+          className="text-[12px] font-medium text-celestir-text-muted hover:text-celestir-stardust transition-colors"
         >
-          Back to Audit Trail
+          Audit Trail
         </Link>
-        <h1 className="text-xl font-semibold text-slate-100 mt-2">Decision Tree</h1>
-        <p className="text-sm text-slate-500 mt-1">
-          Agent delegation tree for session <span className="font-mono">{sessionId}</span>
+        <span className="text-celestir-text-muted/30">/</span>
+        <span className="text-[12px] font-mono text-celestir-text-muted">Decision Tree</span>
+      </div>
+
+      <div>
+        <h1 className="text-2xl font-semibold tracking-tight text-celestir-text">Decision Tree</h1>
+        <p className="text-sm text-celestir-text-muted mt-1">
+          Agent delegation tree for session <span className="font-mono text-celestir-text-secondary">{sessionId}</span>
         </p>
       </div>
 
-      {entriesResult.status === "loading" && <p className="text-slate-500">Loading session entries...</p>}
-      {entriesResult.status === "error" && <p className="text-red-400">{entriesResult.error}</p>}
+      {entriesResult.status === "loading" && (
+        <div className="h-1 bg-celestir-navy-800 rounded-full overflow-hidden">
+          <div className="h-full w-1/3 bg-celestir-aurora rounded-full animate-pulse" />
+        </div>
+      )}
+      {entriesResult.status === "error" && <p className="text-celestir-alert-light text-sm">{entriesResult.error}</p>}
       {entriesResult.status === "success" && entriesResult.data && (
         <div className="space-y-4">
           <DecisionTree

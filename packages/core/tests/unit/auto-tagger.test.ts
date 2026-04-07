@@ -356,7 +356,7 @@ describe("matchRequirement", () => {
 });
 
 /* ------------------------------------------------------------------ */
-/*  tagEntry — Colorado SB 205                                        */
+/*  tagEntry - Colorado SB 205                                         */
 /* ------------------------------------------------------------------ */
 
 describe("tagEntry against Colorado SB 205", () => {
@@ -496,7 +496,7 @@ describe("tagEntry against Colorado SB 205", () => {
 });
 
 /* ------------------------------------------------------------------ */
-/*  tagEntry — NIST AI RMF                                            */
+/*  tagEntry - NIST AI RMF                                             */
 /* ------------------------------------------------------------------ */
 
 describe("tagEntry against NIST AI RMF", () => {
@@ -603,7 +603,7 @@ describe("tagEntry against NIST AI RMF", () => {
 });
 
 /* ------------------------------------------------------------------ */
-/*  tagEntry — EU AI Act                                              */
+/*  tagEntry - EU AI Act                                               */
 /* ------------------------------------------------------------------ */
 
 describe("tagEntry against EU AI Act", () => {
@@ -735,7 +735,7 @@ describe("tagEntry against EU AI Act", () => {
 });
 
 /* ------------------------------------------------------------------ */
-/*  tagEntry — HIPAA                                                  */
+/*  tagEntry - HIPAA                                                   */
 /* ------------------------------------------------------------------ */
 
 describe("tagEntry against HIPAA 164.312(b)", () => {
@@ -819,7 +819,7 @@ describe("tagEntry against HIPAA 164.312(b)", () => {
 });
 
 /* ------------------------------------------------------------------ */
-/*  tagEntry — cross-regulation                                       */
+/*  tagEntry - cross-regulation                                        */
 /* ------------------------------------------------------------------ */
 
 describe("tagEntry across all regulations", () => {

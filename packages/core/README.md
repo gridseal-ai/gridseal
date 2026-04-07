@@ -43,34 +43,33 @@ tracking across agent delegation chains.
 
 ## Install
 
-### TypeScript / Node.js
-
 ```bash
 npm install @gridseal/core
-npm install @gridseal/sdk-node  # optional: provider adapters
 ```
 
-### Python
+For SDK wrappers that auto-capture AI provider calls:
 
 ```bash
-pip install gridseal
-pip install gridseal[openai]     # optional: OpenAI adapter
-pip install gridseal[anthropic]  # optional: Anthropic adapter
+npm install @gridseal/sdk-node
 ```
 
 ## Usage
 
-### TypeScript
+### Core: create a chain and append entries
 
 ```typescript
-import { createChain, appendEntry, validateChain } from "@gridseal/core";
+import {
+  createChain,
+  appendEntry,
+  validateChain,
+} from "@gridseal/core";
 
 const chain = createChain("audit-chain-001");
 
 const result = appendEntry(chain, {
   entryId: crypto.randomUUID(),
   timestamp: new Date().toISOString(),
-  entryType: "ai_decision",
+  entryType: "model-inference",
   modelId: "gpt-4o",
   inputHash: "a1b2c3...",
   outputHash: "d4e5f6...",
@@ -79,9 +78,10 @@ const result = appendEntry(chain, {
 
 if (result.ok) {
   const { chain: updated, entry } = result.value;
-  console.log(entry.entryHash);    // SHA-256 hash of the entry
+  console.log(entry.entryHash); // SHA-256 hash of the entry
   console.log(entry.previousHash); // links to prior entry
 
+  // Validate the entire chain
   const valid = validateChain(updated);
   if (!valid.ok) {
     console.error(valid.error); // reports exact position of tampering
@@ -89,33 +89,7 @@ if (result.ok) {
 }
 ```
 
-### Python
-
-```python
-from gridseal.core.chain import create_chain, append_entry, validate_chain
-from gridseal.core.types import AppendEntryInput
-
-chain = create_chain("audit-chain-001")
-
-result = append_entry(chain, AppendEntryInput(
-    entry_type="ai_decision",
-    model_id="gpt-4o",
-    model_provider="openai",
-    decision_type="classification",
-    input_hash="a1b2c3...",
-    output_hash="d4e5f6...",
-    actor_id="analyst-chen",
-))
-
-if result.ok:
-    print(result.value.entry_hash)
-    print(result.value.previous_hash)
-
-validation = validate_chain(chain)
-print(f"Chain valid: {validation.ok}")
-```
-
-### SDK: wrap an OpenAI client (TypeScript)
+### SDK: wrap an OpenAI client
 
 ```typescript
 import { wrapOpenAI } from "@gridseal/sdk-node";
@@ -141,36 +115,10 @@ if (result.ok) {
 }
 ```
 
-### SDK: wrap an OpenAI client (Python)
-
-```python
-from gridseal.adapters.openai import wrap_openai
-from gridseal.core.chain import create_chain
-from gridseal.core.storage import InMemoryStorage
-from openai import AsyncOpenAI
-
-storage = InMemoryStorage()
-chain = create_chain("session-001")
-
-client = wrap_openai(
-    client=AsyncOpenAI(),
-    storage=storage,
-    chain=chain,
-)
-
-result = await client.create(
-    model="gpt-4o",
-    messages=[{"role": "user", "content": "Evaluate this loan application."}],
-)
-# result.entry contains the proof chain entry
-# result.completion contains the OpenAI response
-```
-
 ## Requirements
 
-- **TypeScript**: Node.js >= 22. Uses native `crypto` module for SHA-256 hashing.
-- **Python**: Python >= 3.12. Uses `hashlib` for SHA-256 hashing.
-- No third-party crypto dependencies in either runtime.
+Node.js >= 22. Uses native `crypto` module for SHA-256 hashing, no third-party
+crypto dependencies.
 
 ## License
 

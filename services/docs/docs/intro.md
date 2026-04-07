@@ -6,7 +6,7 @@ title: Introduction
 
 # GridSeal SDK
 
-GridSeal produces tamper-evident, cryptographically verifiable audit trails for AI decisions. Every AI call your application makes — whether through OpenAI, Anthropic, or any HTTP-based API — gets recorded as a hash-chained, append-only proof chain entry.
+GridSeal produces tamper-evident, cryptographically verifiable audit trails for AI decisions. Every AI call your application makes - whether through OpenAI, Anthropic, or any HTTP-based API - gets recorded as a hash-chained, append-only proof chain entry.
 
 ## What it does
 

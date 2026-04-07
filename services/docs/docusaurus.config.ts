@@ -14,7 +14,7 @@ const config: Config = {
   url: 'https://docs.gridseal.ai',
   baseUrl: '/',
 
-  organizationName: 'celestir',
+  organizationName: 'gridseal-ai',
   projectName: 'gridseal',
 
   onBrokenLinks: 'throw',
@@ -54,7 +54,7 @@ const config: Config = {
           label: 'Docs',
         },
         {
-          href: 'https://github.com/celestir/gridseal',
+          href: 'https://github.com/gridseal-ai/gridseal',
           label: 'GitHub',
           position: 'right',
         },
@@ -90,7 +90,7 @@ const config: Config = {
           ],
         },
       ],
-      copyright: `Copyright ${new Date().getFullYear()} Gridseal by Celestir. AGPL-3.0.`,
+      copyright: `Copyright ${new Date().getFullYear()} Gridseal. AGPL-3.0.`,
     },
     prism: {
       theme: prismThemes.github,

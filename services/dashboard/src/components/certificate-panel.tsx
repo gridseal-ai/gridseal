@@ -34,76 +34,76 @@ export function CertificatePanel({
   };
 
   return (
-    <div className="border border-slate-700 rounded-lg">
+    <div className="border border-celestir-navy-700/50 rounded-lg">
       <button
         onClick={toggle}
-        className="w-full px-4 py-3 flex items-center justify-between text-left hover:bg-slate-800/30 transition-colors"
+        className="w-full px-4 py-3 flex items-center justify-between text-left hover:bg-celestir-navy-800/30 transition-colors"
       >
-        <span className="text-sm font-medium text-slate-200">Reasoning Certificate</span>
-        <span className="text-xs text-slate-500">{expanded ? "Collapse" : "Expand"}</span>
+        <span className="text-sm font-medium text-celestir-text">Reasoning Certificate</span>
+        <span className="text-xs text-celestir-text-muted">{expanded ? "Collapse" : "Expand"}</span>
       </button>
 
       {expanded && (
-        <div className="px-4 pb-4 border-t border-slate-800">
-          {loading && <p className="text-sm text-slate-500 mt-3">Loading certificate...</p>}
-          {error && <p className="text-sm text-red-400 mt-3">{error}</p>}
+        <div className="px-4 pb-4 border-t border-celestir-navy-800">
+          {loading && <p className="text-sm text-celestir-text-muted mt-3">Loading certificate...</p>}
+          {error && <p className="text-sm text-celestir-alert-light mt-3">{error}</p>}
           {certificate && (
             <div className="space-y-4 mt-3">
               <div>
-                <h4 className="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1.5">
+                <h4 className="text-xs font-semibold uppercase tracking-wider text-celestir-text-muted mb-1.5">
                   Claims Analysis
                 </h4>
                 <div className="space-y-1.5">
                   {certificate.claimsAnalysis.claims.map((c, i) => (
                     <div key={i} className="text-sm">
-                      <span className="text-slate-300">{c.claim}</span>
-                      <span className="ml-2 text-xs text-slate-500">[{c.status}]</span>
-                      <p className="text-xs text-slate-400 mt-0.5">{c.evidence}</p>
+                      <span className="text-celestir-text-secondary">{c.claim}</span>
+                      <span className="ml-2 text-xs text-celestir-text-muted">[{c.status}]</span>
+                      <p className="text-xs text-celestir-text-muted mt-0.5">{c.evidence}</p>
                     </div>
                   ))}
                 </div>
               </div>
 
               <div>
-                <h4 className="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1.5">
+                <h4 className="text-xs font-semibold uppercase tracking-wider text-celestir-text-muted mb-1.5">
                   Evidence Chain
                 </h4>
                 <ol className="list-decimal list-inside space-y-1">
                   {certificate.evidenceChain.steps.map((s, i) => (
-                    <li key={i} className="text-sm text-slate-300">
+                    <li key={i} className="text-sm text-celestir-text-secondary">
                       {s.step}
-                      <p className="text-xs text-slate-400 ml-3">{s.reasoning}</p>
+                      <p className="text-xs text-celestir-text-muted ml-3">{s.reasoning}</p>
                     </li>
                   ))}
                 </ol>
               </div>
 
               <div>
-                <h4 className="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1.5">
+                <h4 className="text-xs font-semibold uppercase tracking-wider text-celestir-text-muted mb-1.5">
                   Confidence Assessment
                 </h4>
                 <div className="text-sm">
-                  <span className="text-slate-300">
+                  <span className="text-celestir-text-secondary">
                     Level: {certificate.confidenceAssessment.level}
                   </span>
-                  <span className="ml-3 text-slate-400">
+                  <span className="ml-3 text-celestir-text-muted">
                     Score: {certificate.confidenceAssessment.score}
                   </span>
                 </div>
-                <p className="text-xs text-slate-400 mt-1">
+                <p className="text-xs text-celestir-text-muted mt-1">
                   Rationale: {certificate.confidenceAssessment.rationale}
                 </p>
               </div>
 
               <div>
-                <h4 className="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1.5">
+                <h4 className="text-xs font-semibold uppercase tracking-wider text-celestir-text-muted mb-1.5">
                   Limitations
                 </h4>
                 <div className="space-y-1">
                   {certificate.limitations.items.map((l, i) => (
                     <div key={i} className="text-sm">
-                      <span className="text-slate-300">{l.limitation}</span>
-                      <span className="ml-2 text-xs text-slate-500">[{l.severity}]</span>
+                      <span className="text-celestir-text-secondary">{l.limitation}</span>
+                      <span className="ml-2 text-xs text-celestir-text-muted">[{l.severity}]</span>
                     </div>
                   ))}
                 </div>

@@ -63,7 +63,7 @@ describe("Large volume integration", () => {
       expect(res.status).toBe(201);
     }
 
-    // Validate chain — must succeed
+    // Validate chain - must succeed
     const start = performance.now();
     const validateRes = await app.request(`/chains/${chainId}/validate`, {
       method: "POST",
@@ -126,7 +126,7 @@ describe("Large volume integration", () => {
     expect(reportBody.report.statistics.totalEntries).toBe(totalEntries);
     // Report should generate within 10 seconds
     expect(reportElapsed).toBeLessThan(10_000);
-  }, 600_000); // 10 minute timeout for 10K entries (coverage instrumentation is slow)
+  }, 1_200_000); // 20 minute timeout for 10K entries (v8 coverage instrumentation adds ~10x overhead)
 
   it("handles a chain with all entry types and diverse field combinations", async () => {
     const chainId = "diverse-chain";

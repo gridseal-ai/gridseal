@@ -192,7 +192,7 @@ describe("renderTrustPage", () => {
     expect(html).toContain("Last verification:");
   });
 
-  it("includes Celestir color palette in CSS", () => {
+  it("includes color palette in CSS", () => {
     const html = renderTrustPage(makeTrustPageData());
     expect(html).toContain("#0A1628");
     expect(html).toContain("#1B6B9A");

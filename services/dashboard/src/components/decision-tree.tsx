@@ -11,18 +11,42 @@ import {
   collectEdges,
 } from "./tree-layout.js";
 
-const REVIEW_COLORS: Record<string, { bg: string; text: string; border: string }> = {
-  approved: { bg: "#064e3b", text: "#6ee7b7", border: "#059669" },
-  rejected: { bg: "#450a0a", text: "#fca5a5", border: "#dc2626" },
-  pending: { bg: "#422006", text: "#fcd34d", border: "#d97706" },
+const STATUS_THEMES: Record<string, { fill: string; glow: string; text: string; border: string; label: string }> = {
+  approved: {
+    fill: "#0A2E1A",
+    glow: "rgba(46, 204, 113, 0.12)",
+    text: "#52D989",
+    border: "#2ECC71",
+    label: "VERIFIED",
+  },
+  rejected: {
+    fill: "#1A0A0A",
+    glow: "rgba(220, 38, 38, 0.12)",
+    text: "#EF4444",
+    border: "#DC2626",
+    label: "REJECTED",
+  },
+  pending: {
+    fill: "#1A1400",
+    glow: "rgba(217, 119, 6, 0.12)",
+    text: "#F59E0B",
+    border: "#D97706",
+    label: "PENDING",
+  },
 };
 
-const DEFAULT_COLORS = { bg: "#1e293b", text: "#94a3b8", border: "#334155" };
+const DEFAULT_THEME = {
+  fill: "#0F1F36",
+  glow: "rgba(27, 107, 154, 0.06)",
+  text: "#94A3B8",
+  border: "#1B6B9A",
+  label: "",
+};
 
-function nodeColors(entry: ProofChainEntry) {
+function getTheme(entry: ProofChainEntry) {
   const status = entry.tags["review_status"] ?? entry.tags["reviewStatus"];
-  if (status && status in REVIEW_COLORS) return REVIEW_COLORS[status]!;
-  return DEFAULT_COLORS;
+  if (status && status in STATUS_THEMES) return STATUS_THEMES[status]!;
+  return DEFAULT_THEME;
 }
 
 function nodeLabel(entry: ProofChainEntry): string {
@@ -37,24 +61,27 @@ function truncate(s: string, max: number): string {
   return s.length > max ? `${s.slice(0, max - 1)}...` : s;
 }
 
-function EdgeLine({ parent, child }: Edge) {
+function ConstellationEdge({ parent, child }: Edge) {
   const x1 = parent.x + NODE_W / 2;
   const y1 = parent.y + NODE_H;
   const x2 = child.x + NODE_W / 2;
   const y2 = child.y;
   const mid = (y1 + y2) / 2;
   return (
-    <path
-      d={`M ${x1} ${y1} C ${x1} ${mid}, ${x2} ${mid}, ${x2} ${y2}`}
-      fill="none"
-      stroke="#334155"
-      strokeWidth={1.5}
-      strokeOpacity={0.7}
-    />
+    <g>
+      <path
+        d={`M ${x1} ${y1} C ${x1} ${mid}, ${x2} ${mid}, ${x2} ${y2}`}
+        fill="none"
+        stroke="url(#edge-gradient)"
+        strokeWidth={1.5}
+      />
+      <circle cx={x1} cy={y1} r={2} fill="#4DA8DA" opacity={0.5} />
+      <circle cx={x2} cy={y2} r={2} fill="#4DA8DA" opacity={0.5} />
+    </g>
   );
 }
 
-function TreeNodeRect({
+function ConstellationNode({
   node,
   isSelected,
   onClick,
@@ -64,13 +91,11 @@ function TreeNodeRect({
   readonly onClick: () => void;
 }) {
   const { entry } = node;
-  const colors = nodeColors(entry);
+  const theme = getTheme(entry);
   const label = nodeLabel(entry);
-  const authority = entry.tags["authority_level"] ?? entry.tags["authorityLevel"] ?? null;
-  const reviewStatus = entry.tags["review_status"] ?? entry.tags["reviewStatus"] ?? null;
   const summary = nodeSummary(entry);
-  const borderColor = isSelected ? "#38bdf8" : colors.border;
-  const borderWidth = isSelected ? 2.5 : 1.5;
+  const borderColor = isSelected ? "#4DA8DA" : theme.border;
+  const borderWidth = isSelected ? 2 : 1;
 
   return (
     <g
@@ -81,27 +106,51 @@ function TreeNodeRect({
       aria-label={`Tree node: ${label}`}
       data-testid={`tree-node-${entry.entryId}`}
     >
+      {isSelected && (
+        <rect
+          x={-4}
+          y={-4}
+          width={NODE_W + 8}
+          height={NODE_H + 8}
+          rx={12}
+          ry={12}
+          fill="none"
+          stroke="#4DA8DA"
+          strokeWidth={1}
+          strokeOpacity={0.2}
+        />
+      )}
       <rect
         width={NODE_W}
         height={NODE_H}
         rx={8}
         ry={8}
-        fill={colors.bg}
+        fill={theme.fill}
         stroke={borderColor}
         strokeWidth={borderWidth}
+        strokeOpacity={isSelected ? 1 : 0.5}
       />
-      <text x={10} y={20} fill={colors.text} fontSize={13} fontWeight={600} fontFamily="system-ui, -apple-system, sans-serif">
-        {truncate(label, 26)}
+      <rect
+        x={0}
+        y={0}
+        width={3}
+        height={NODE_H}
+        rx={1.5}
+        fill={theme.border}
+        opacity={0.8}
+      />
+      <text x={14} y={22} fill={theme.text} fontSize={13} fontWeight={600} fontFamily='"DM Sans", system-ui, sans-serif'>
+        {truncate(label, 22)}
       </text>
-      <text x={10} y={38} fill="#94a3b8" fontSize={10} fontFamily="system-ui, -apple-system, sans-serif">
-        {authority ? `Level: ${authority}` : ""}
-        {authority && reviewStatus ? "  |  " : ""}
-        {reviewStatus ? `Review: ${reviewStatus}` : ""}
+      <text x={14} y={40} fill="#64748B" fontSize={10} fontFamily='"DM Sans", system-ui, sans-serif'>
+        {truncate(summary, 28)}
       </text>
-      <text x={10} y={58} fill="#cbd5e1" fontSize={11} fontFamily="system-ui, -apple-system, sans-serif">
-        {truncate(summary, 30)}
-      </text>
-      <text x={NODE_W - 10} y={20} fill="#64748b" fontSize={10} textAnchor="end" fontFamily="ui-monospace, monospace">
+      {theme.label && (
+        <text x={14} y={60} fill={theme.text} fontSize={9} fontWeight={700} fontFamily='"JetBrains Mono", monospace' letterSpacing={1}>
+          {theme.label}
+        </text>
+      )}
+      <text x={NODE_W - 10} y={20} fill="#64748B" fontSize={9} textAnchor="end" fontFamily='"JetBrains Mono", monospace'>
         #{entry.sequenceNumber}
       </text>
     </g>
@@ -196,7 +245,7 @@ export function DecisionTree({
 
   if (entries.length === 0) {
     return (
-      <div className="text-center py-12 text-slate-500" data-testid="decision-tree-empty">
+      <div className="glass-panel rounded-lg text-center py-16 text-celestir-text-muted" data-testid="decision-tree-empty">
         No entries to display.
       </div>
     );
@@ -205,36 +254,18 @@ export function DecisionTree({
   return (
     <div className="relative" data-testid="decision-tree">
       <div className="absolute top-3 right-3 z-10 flex gap-1">
-        <button
-          onClick={zoomIn}
-          className="w-8 h-8 bg-slate-800 border border-slate-700 rounded text-slate-300 hover:bg-slate-700 text-sm font-bold"
-          title="Zoom in"
-        >
-          +
-        </button>
-        <button
-          onClick={zoomOut}
-          className="w-8 h-8 bg-slate-800 border border-slate-700 rounded text-slate-300 hover:bg-slate-700 text-sm font-bold"
-          title="Zoom out"
-        >
-          -
-        </button>
-        <button
-          onClick={fitView}
-          className="h-8 px-2 bg-slate-800 border border-slate-700 rounded text-slate-400 hover:bg-slate-700 text-xs"
-          title="Reset view"
-        >
-          Fit
-        </button>
+        <button onClick={zoomIn} className="w-8 h-8 glass-panel rounded-md text-celestir-text-secondary hover:text-celestir-text text-sm font-bold transition-colors" title="Zoom in">+</button>
+        <button onClick={zoomOut} className="w-8 h-8 glass-panel rounded-md text-celestir-text-secondary hover:text-celestir-text text-sm font-bold transition-colors" title="Zoom out">-</button>
+        <button onClick={fitView} className="h-8 px-3 glass-panel rounded-md text-celestir-text-muted hover:text-celestir-text text-[11px] font-medium transition-colors" title="Reset view">Fit</button>
       </div>
 
-      <div className="absolute top-3 left-3 z-10 text-xs text-slate-500">
-        {nodes.length} node{nodes.length !== 1 ? "s" : ""} | {roots.length} root{roots.length !== 1 ? "s" : ""}
+      <div className="absolute top-3 left-3 z-10 text-[11px] font-mono text-celestir-text-muted/60">
+        {nodes.length} node{nodes.length !== 1 ? "s" : ""} / {roots.length} root{roots.length !== 1 ? "s" : ""}
       </div>
 
       <div
         ref={containerRef}
-        className="w-full h-[500px] bg-slate-950 border border-slate-800 rounded-lg overflow-hidden"
+        className="w-full h-[560px] glass-panel rounded-lg overflow-hidden"
         onWheel={handleWheel}
         onMouseDown={handleMouseDown}
         onMouseMove={handleMouseMove}
@@ -243,16 +274,29 @@ export function DecisionTree({
         style={{ cursor: dragging ? "grabbing" : "grab" }}
       >
         <svg width="100%" height="100%" style={{ overflow: "visible" }}>
+          <defs>
+            <linearGradient id="edge-gradient" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stopColor="#4DA8DA" stopOpacity={0.4} />
+              <stop offset="100%" stopColor="#1B6B9A" stopOpacity={0.15} />
+            </linearGradient>
+            <filter id="node-glow">
+              <feGaussianBlur stdDeviation="4" result="blur" />
+              <feMerge>
+                <feMergeNode in="blur" />
+                <feMergeNode in="SourceGraphic" />
+              </feMerge>
+            </filter>
+          </defs>
           <g transform={`translate(${pan.x}, ${pan.y}) scale(${scale})`}>
             {edges.map(({ parent, child }) => (
-              <EdgeLine
+              <ConstellationEdge
                 key={`${parent.entry.entryId}-${child.entry.entryId}`}
                 parent={parent}
                 child={child}
               />
             ))}
             {nodes.map((n) => (
-              <TreeNodeRect
+              <ConstellationNode
                 key={n.entry.entryId}
                 node={n}
                 isSelected={selectedEntryId === n.entry.entryId}

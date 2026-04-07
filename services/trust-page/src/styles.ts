@@ -1,6 +1,6 @@
 /**
  * Embedded CSS for self-contained Trust Page HTML.
- * Uses the Celestir color palette:
+ * Uses the Gridseal color palette:
  *   Midnight Navy: #0A1628
  *   Aurora Blue:   #1B6B9A
  *   Stardust:      #4DA8DA

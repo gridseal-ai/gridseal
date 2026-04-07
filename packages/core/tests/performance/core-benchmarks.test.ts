@@ -1,5 +1,5 @@
 /**
- * Layer 7 — Performance and stress benchmarks for @gridseal/core.
+ * Layer 7 - Performance and stress benchmarks for @gridseal/core.
  *
  * Every test exercises the real implementation with real data.
  * No mocks, no stubs. Assertions enforce the performance targets
@@ -69,7 +69,7 @@ function percentile(sorted: ReadonlyArray<number>, p: number): number {
 }
 
 /* ------------------------------------------------------------------ */
-/*  1. Throughput — chain append (in-memory)                           */
+/*  1. Throughput - chain append (in-memory)                            */
 /* ------------------------------------------------------------------ */
 
 describe("Throughput benchmarks", () => {
@@ -122,7 +122,7 @@ describe("Throughput benchmarks", () => {
 });
 
 /* ------------------------------------------------------------------ */
-/*  2. Latency — entry creation p50/p95/p99                            */
+/*  2. Latency - entry creation p50/p95/p99                             */
 /* ------------------------------------------------------------------ */
 
 describe("Latency benchmarks", () => {
@@ -192,7 +192,7 @@ describe("Latency benchmarks", () => {
 });
 
 /* ------------------------------------------------------------------ */
-/*  3. Chain validation — 1K, 10K, 100K entries                        */
+/*  3. Chain validation - 1K, 10K, 100K entries                         */
 /* ------------------------------------------------------------------ */
 
 describe("Chain validation benchmarks", () => {
@@ -232,7 +232,7 @@ describe("Chain validation benchmarks", () => {
 });
 
 /* ------------------------------------------------------------------ */
-/*  4. Memory — 100K entries peak RSS under 500MB                      */
+/*  4. Memory - 100K entries peak RSS under 500MB                       */
 /* ------------------------------------------------------------------ */
 
 describe("Memory benchmarks", () => {
@@ -333,7 +333,7 @@ describe("Storage adapter benchmarks", () => {
 });
 
 /* ------------------------------------------------------------------ */
-/*  6. Compliance report generation — 10K-entry chain under 10s        */
+/*  6. Compliance report generation - 10K-entry chain under 10s         */
 /* ------------------------------------------------------------------ */
 
 describe("Report generation benchmarks", () => {

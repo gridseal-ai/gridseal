@@ -6,7 +6,7 @@ import type {
 import type { DecisionType } from "../schema/entry-types.js";
 
 /**
- * A premise that grounds an AI decision — an observed fact or input condition
+ * A premise that grounds an AI decision - an observed fact or input condition
  * that the model relied on to reach its conclusion.
  */
 export type Premise = {

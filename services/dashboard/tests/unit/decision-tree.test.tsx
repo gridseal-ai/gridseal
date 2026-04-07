@@ -157,7 +157,7 @@ describe("DecisionTree component", () => {
       <DecisionTree entries={entries} selectedEntryId={null} />,
     );
     const rect = document.querySelector("svg rect");
-    expect(rect?.getAttribute("fill")).toBe("#064e3b");
+    expect(rect?.getAttribute("fill")).toBe("#0A2E1A");
   });
 
   it("displays node and root count", () => {

@@ -1,5 +1,5 @@
 /**
- * Layer 7 — API throughput and latency benchmarks.
+ * Layer 7 - API throughput and latency benchmarks.
  *
  * Every test exercises the real Hono app with a real SQLite database.
  * No mocks, no stubs. Assertions enforce performance targets.

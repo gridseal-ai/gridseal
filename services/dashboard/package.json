@@ -13,7 +13,7 @@
     "lint": "tsc --noEmit",
     "clean": "rm -rf dist"
   },
-  "author": "Gridseal by Celestir",
+  "author": "Gridseal",
   "license": "AGPL-3.0-only",
   "dependencies": {
     "react": "^19.1.0",

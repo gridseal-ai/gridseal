@@ -1,6 +1,6 @@
 {
   "name": "@gridseal/core",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Tamper-evident, cryptographically verifiable audit trail for AI decisions",
   "type": "module",
   "main": "./dist/index.js",
@@ -38,11 +38,11 @@
     "compliance",
     "provenance"
   ],
-  "author": "Gridseal by Celestir",
+  "author": "Gridseal",
   "license": "AGPL-3.0-only",
   "repository": {
     "type": "git",
-    "url": "https://github.com/celestir/gridseal.git",
+    "url": "https://github.com/gridseal-ai/gridseal.git",
     "directory": "packages/core"
   },
   "engines": {
@@ -50,7 +50,8 @@
   },
   "sideEffects": false,
   "files": [
-    "dist"
+    "dist",
+    "README.md"
   ],
   "peerDependencies": {
     "better-sqlite3": ">=9.0.0",

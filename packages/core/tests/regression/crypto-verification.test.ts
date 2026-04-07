@@ -832,7 +832,7 @@ describe("Chain integrity properties", () => {
 });
 
 // ---------------------------------------------------------------------------
-// SECTION 12: Chain modification resistance (comprehensive)
+// SECTION 12: Chain modification resistance (full coverage)
 // ---------------------------------------------------------------------------
 describe("Chain modification resistance", () => {
   const chain = buildChain(50);

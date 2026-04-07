@@ -18,3 +18,7 @@ reviews/
 SHARED_TASK_NOTES.md
 .docusaurus/
 build/
+run-sprints.sh
+run-parallel-cleanup.sh
+sprint-runner.log
+sprint-runner-parallel.log

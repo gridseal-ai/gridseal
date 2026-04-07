@@ -1,5 +1,5 @@
 /**
- * UAT Layer 6 — Attacker perspective security tests.
+ * UAT Layer 6 - Attacker perspective security tests.
  *
  * Every test exercises the real Hono app with a real SQLite database.
  * No mocks, no stubs, no spies.
@@ -230,7 +230,7 @@ describe("timing attack resistance on authentication", () => {
     const avgRandom = trimmed(randomTimes).reduce((a, b) => a + b, 0) / trimmed(randomTimes).length;
 
     // The ratio between the two averages should be close to 1.
-    // Allow up to 5x difference — we are testing that there is no
+    // Allow up to 5x difference - we are testing that there is no
     // order-of-magnitude leak (e.g., one path doing a DB lookup).
     const ratio = Math.max(avgValid, avgRandom) / Math.min(avgValid, avgRandom);
     expect(ratio).toBeLessThan(5);
@@ -289,7 +289,7 @@ describe("chain tampering via API", () => {
   }, 30_000);
 
   it("rejects entry with fabricated inputHash that does not match actual content", async () => {
-    // The API accepts any valid SHA-256 hex for inputHash — the tampering
+    // The API accepts any valid SHA-256 hex for inputHash - the tampering
     // detection happens at chain validation (entryHash is computed server-side).
     // What we verify is that after appending, chain validation still passes
     // because the server computes hashes, not the client.
@@ -403,7 +403,7 @@ describe("direct database tampering detection", () => {
       expect(status).toBe(201);
     }
 
-    // Modify input_hash of entry at sequence 2 — changes content but not entry_hash
+    // Modify input_hash of entry at sequence 2 - changes content but not entry_hash
     const rawDb = new Database(DB_PATH);
     const row = rawDb.prepare(
       "SELECT entry_id FROM entries WHERE chain_id = ? AND tenant_id = ? AND sequence_number = ?",
@@ -478,7 +478,7 @@ describe("replay attack resistance", () => {
       outputHash: "d".repeat(64),
     };
 
-    // Same content, different entryIds — both should succeed since entryId is unique
+    // Same content, different entryIds - both should succeed since entryId is unique
     const results = await Promise.all(
       Array.from({ length: 5 }, () =>
         appendEntry(app, TENANT_A, dedupeChain, { ...baseData, entryId: crypto.randomUUID() }),
@@ -701,7 +701,7 @@ describe("header injection resistance", () => {
           sessionId: payload,
         })),
       });
-      // Either accepted (stored safely) or rejected — never 500
+      // Either accepted (stored safely) or rejected - never 500
       expect([201, 400]).toContain(res.status);
 
       if (res.status === 201) {
@@ -779,7 +779,7 @@ describe("cross-tenant API abuse", () => {
       await appendEntry(app, TENANT_A, xChain);
     }
 
-    // Tenant B tries to validate — should see empty chain (404)
+    // Tenant B tries to validate - should see empty chain (404)
     const res = await app.request(`/chains/${xChain}/validate`, {
       method: "POST",
       headers: authFor(TENANT_B),

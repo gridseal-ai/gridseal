@@ -30,7 +30,7 @@ describe("Layout", () => {
       </MemoryRouter>,
     );
     const links = screen.getAllByText("Audit Trail");
-    const activeLink = links.find((el) => el.className.includes("text-sky-400"));
+    const activeLink = links.find((el) => el.className.includes("text-celestir-stardust"));
     expect(activeLink).toBeTruthy();
   });
 });

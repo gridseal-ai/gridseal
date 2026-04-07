@@ -16,38 +16,51 @@ export function EntryDetailPage() {
   );
 
   return (
-    <div className="space-y-6">
-      <div>
+    <div className="space-y-6 animate-fade-in">
+      <div className="flex items-center gap-3">
         <Link
           to="/chains"
-          className="text-xs text-slate-500 hover:text-slate-300 transition-colors"
+          className="text-[12px] font-medium text-celestir-text-muted hover:text-celestir-stardust transition-colors"
         >
-          Back to Audit Trail
+          Audit Trail
         </Link>
-        <h1 className="text-xl font-semibold text-slate-100 mt-2">Entry Detail</h1>
+        <span className="text-celestir-text-muted/30">/</span>
+        <span className="text-[12px] font-mono text-celestir-text-muted">
+          {entryId?.slice(0, 12)}...
+        </span>
       </div>
 
-      {result.status === "loading" && <p className="text-slate-500">Loading entry...</p>}
-      {result.status === "error" && <p className="text-red-400">{result.error}</p>}
+      <div className="flex items-center justify-between">
+        <h1 className="text-2xl font-semibold tracking-tight text-celestir-text">Entry Detail</h1>
+        {result.status === "success" && result.data?.entry.sessionId && (
+          <Link
+            to={`/chains/${chainId}/sessions/${result.data.entry.sessionId}`}
+            className="flex items-center gap-2 px-4 py-2 glass-panel rounded-lg text-[12px] font-medium text-celestir-stardust hover:text-celestir-stardust-light transition-colors"
+          >
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+              <circle cx="7" cy="3" r="2" stroke="currentColor" strokeWidth="1.2" />
+              <circle cx="3" cy="11" r="2" stroke="currentColor" strokeWidth="1.2" />
+              <circle cx="11" cy="11" r="2" stroke="currentColor" strokeWidth="1.2" />
+              <line x1="7" y1="5" x2="3" y2="9" stroke="currentColor" strokeWidth="1.2" />
+              <line x1="7" y1="5" x2="11" y2="9" stroke="currentColor" strokeWidth="1.2" />
+            </svg>
+            View decision tree
+          </Link>
+        )}
+      </div>
+
+      {result.status === "loading" && (
+        <div className="h-1 bg-celestir-navy-800 rounded-full overflow-hidden">
+          <div className="h-full w-1/3 bg-celestir-aurora rounded-full animate-pulse" />
+        </div>
+      )}
+      {result.status === "error" && <p className="text-celestir-alert-light text-sm">{result.error}</p>}
       {result.status === "success" && result.data && (
-        <div className="space-y-6">
-          <div className="bg-slate-900/30 border border-slate-800 rounded-lg p-6">
-            <EntryFieldsView entry={result.data.entry} />
-          </div>
+        <div className="space-y-4">
+          <EntryFieldsView entry={result.data.entry} />
 
           {result.data.entry.reasoningCertificateId && (
             <CertificatePanel certificateId={result.data.entry.reasoningCertificateId} />
-          )}
-
-          {result.data.entry.sessionId && (
-            <div className="pt-2">
-              <Link
-                to={`/chains/${chainId}/sessions/${result.data.entry.sessionId}`}
-                className="text-sm text-sky-400 hover:text-sky-300 hover:underline"
-              >
-                View session decision tree
-              </Link>
-            </div>
           )}
         </div>
       )}

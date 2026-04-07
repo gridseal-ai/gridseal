@@ -249,7 +249,7 @@ describe("renderBadgeSvg", () => {
     expect(svg).toContain("<title>GridSeal: unverified</title>");
   });
 
-  it("uses Celestir midnight navy for the label background", () => {
+  it("uses midnight navy for the label background", () => {
     const data: BadgeData = {
       status: "verified",
       entryCount: 1,

@@ -67,7 +67,7 @@ describe("Trust Page routes", () => {
       expect(html).toContain("Human Review");
     });
 
-    it("includes Celestir color palette in CSS", async () => {
+    it("includes color palette in CSS", async () => {
       await addEntry(app, "style-test");
       const res = await app.request("/chains/style-test/trust");
       const html = await res.text();
